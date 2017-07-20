@@ -1,0 +1,28 @@
+version: "2.2"
+services:
+  
+  proxy:
+    container_name: "nginx-proxy"
+    image: "jwilder/nginx-proxy:latest"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /home/docker/config/nginx/certs:/etc/nginx/certs:ro
+      - /home/docker/config/nginx/vhost.d:/etc/nginx/vhost.d:ro
+      - /home/docker/config/nginx/conf.d/proxy.conf:/etc/nginx/conf.d/proxy.conf:ro
+      - /home/docker/config/nginx/htpasswd:/etc/nginx/htpasswd:ro
+    networks:
+      - proxy_network
+    ports:
+      - "443:443"
+      - "80:80"
+    logging:
+     driver: json-file
+     options:
+      max-size: "200k"
+      max-file: "10"
+
+networks:
+  proxy_network:
+# uncomment the two lines below if you run docker-compose for nginx after other containers have alreay conntected to the network
+#    external:
+#     name: nginx_proxy_network
