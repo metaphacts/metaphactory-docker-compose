@@ -41,7 +41,7 @@ It is recommended to use a proxy container with virtual host mappings to proxy t
 		(Your Root certificate: TrustedRoot.crt) 
 		-----END CERTIFICATE----
 
-3. Go into the `cert` folder i.e. `cd /home/docker/config/nginx/certs` and generate [Diffieâ€“Hellman](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) parameters using `openssl dhparam -dsaparam -out /home/docker/config/nginx/certs/mydocker.example.com.dhparam.pem 4096`. `-dsaparam` [option instructs OpenSSL to produce "DSA-like" DH parameters ](https://wiki.openssl.org/index.php/Manual:Dhparam(1)#OPTIONS) , which is magnitude faster then computing the dhparam 4096 (see explanation [on stackexchange](https://security.stackexchange.com/a/95184))
+3. Go into the `cert` folder i.e. `cd /home/docker/config/nginx/certs` and generate [Diffie–Hellman](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) parameters using `openssl dhparam -dsaparam -out /home/docker/config/nginx/certs/mydocker.example.com.dhparam.pem 4096`. `-dsaparam` [option instructs OpenSSL to produce "DSA-like" DH parameters ](https://wiki.openssl.org/index.php/Manual:Dhparam(1)#OPTIONS) , which is magnitude faster then computing the dhparam 4096 (see explanation [on stackexchange](https://security.stackexchange.com/a/95184))
 Go into folder `docker-compose/nginx`
 4. Now we are ready to create and start the proxy container. Running `docker-compose up -d` should result in:
 		Creating network "nginx_proxy_network" with the default driver
@@ -76,10 +76,10 @@ Go into folder `docker-compose/nginx`
 ### Initial Deployment
 To create a new deployment from scratch:
 
-1. Go into the `cd docker-compose/metaphactory-blazegraph` folder and create a copy of the `service-template` folder i.e. `cp service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
+1. Go into the `cd docker-compose/metaphactory-blazegraph` folder and create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
 2. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
 3. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy.
-4. Run `docker-compose up -d`. It is **important to run the command in the same folder**, since docker-compose will pick up the `.env` file for parameterization.
+4. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 
 ### Update of Deployments
 The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory or blazegraph, but leaving the deployment specific data and configuration assets untouched.
