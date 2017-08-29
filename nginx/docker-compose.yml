@@ -4,6 +4,7 @@ services:
   proxy:
     container_name: "nginx-proxy"
     image: "jwilder/nginx-proxy:latest"
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - /home/docker/config/nginx/certs:/etc/nginx/certs:ro

@@ -1,0 +1,14 @@
+version: "2.2"
+services:
+  blazegraph:
+    #blazegraph-overwites here
+    #ports:
+    #  - "10214:8080"
+    #environment:
+    #  - JAVA_OPTS=-Xmx1g
+  metaphactory:
+    #metaphactory-overwites here
+    #ports:
+    #  - "10214:8080"
+    #environment:
+    #  - JAVA_OPTS=-Xmx1g

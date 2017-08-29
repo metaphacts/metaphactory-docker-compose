@@ -9,16 +9,13 @@ services:
  blazegraph:
   container_name: "${COMPOSE_PROJECT_NAME}-blazegraph"
   image: "${BLAZEGRAPH_IMAGE}"
+  restart: unless-stopped
   volumes_from:
      - blazegraph-data
   environment:
      - JAVA_OPTS=-Xmx1g
   networks:
      - metaphactory_network
-  # you may want to expose the port to the host 
-  # i.e. if you are not using a proxy or if you want to access blazegraph admin interface from localhost 
-  # ports:
-  #      - "13334:8080"
   depends_on:
       - blazegraph-data
   logging:
@@ -34,6 +31,7 @@ services:
  metaphactory:
   container_name: "${COMPOSE_PROJECT_NAME}-metaphactory"
   image: "${METAPHACTORY_IMAGE}"
+  restart: unless-stopped
   environment:
      - PLATFORM_OPTS=-Dconfig.environment.sparqlEndpoint=http://${COMPOSE_PROJECT_NAME}-blazegraph:8080/blazegraph/sparql -Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2-trace2.xml ${METAPHACTORY_OPTS}
      - VIRTUAL_HOST=${COMPOSE_PROJECT_NAME}.${HOST_NAME}
@@ -43,10 +41,6 @@ services:
   networks:
      - default
      - metaphactory_network
-  # you may want to expose the port to the host
-  # i.e. if you are not using a proxy
-  #  ports:
-  #      - "10214:8080"
   depends_on:
        - metaphactory-data
        - blazegraph
