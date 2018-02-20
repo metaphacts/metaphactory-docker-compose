@@ -13,6 +13,7 @@ It is recommended to use a proxy container with virtual host mappings to proxy t
 * Security
 	* Not every container/deployment should expose a port (neither on localhost nor to the outside network). Firewall needs to open only two ports.
 	* SSL certificate handling in a single place. Instead of dealing with certificates individually or using self-signed certificates, there will be only one officially signed wildcard certificate. One-time installation, valid for all deployments.
+    * Ability to automatically issue certificates with [Let's Encrypt](https://letsencrypt.org/).
 	* Easy to .htaccess protect containers/deployments that have no built-in authentication mechanism
 * Dealing with hostnames is much easier than dealing with IPs and Ports
 	* Changes to the underlying (container) setup/infrastructure can be handled transparently.
@@ -29,7 +30,8 @@ It is recommended to use a proxy container with virtual host mappings to proxy t
 
 ### Setup
 1. Create the initial folder structure for nginx config files i.e. so that one can mount the folder when creating the proxy container and place additional config files later if needed: `mkdir -p /home/docker/config/nginx/{certs,htpasswd,vhost.d,conf.d}` and `touch /home/docker/config/nginx/conf.d/proxy.conf`.
-2. Copy SSL certificate to `/home/docker/config/nginx/certs` i.e. the *.key file and *.crt file must be named equivalent to the hostname (e.g. mydocker.example.com.key and mydocker.example.com.crt, if you have a wildcard certificate for *.mydocker.example.com). Set proper permissions to protect the key file (i.e. docker must be able to read it, but no one else). The *.cert file should contain only the certificate body (from `-----BEGIN CERTIFICATE----- ` to `-----END CERTIFICATE----- `) but also all intermediate certificates/root certificate required for the certificate chain. You can simple concatenate these, however, order matters:
+2. Copy the content of [nginx.tmpl](https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl) to `/home/docker/config/nginx/nginx.tmpl`
+3. Copy SSL certificate to `/home/docker/config/nginx/certs` i.e. the *.key file and *.crt file must be named equivalent to the hostname (e.g. mydocker.example.com.key and mydocker.example.com.crt, if you have a wildcard certificate for *.mydocker.example.com). Set proper permissions to protect the key file (i.e. docker must be able to read it, but no one else). The *.cert file should contain only the certificate body (from `-----BEGIN CERTIFICATE----- ` to `-----END CERTIFICATE----- `) but also all intermediate certificates/root certificate required for the certificate chain. You can simple concatenate these, however, order matters:
 
 		-----BEGIN CERTIFICATE----- 
 		(Your Primary SSL certificate: your_domain_name.crt) 
@@ -65,6 +67,9 @@ Go into folder `docker-compose/nginx`
 
 * If you do not want to use HTTPS, simple modify the nginx `docker-compose/nginx/docker-compose.yml` file i.e. remove/comment the line where the 443 is exposed and where the path to the `/home/docker/config/nginx/certs` folder is mounted as volume. The volumes section is also the place to be modified, in case you want to use a different location to place your configuration files including specific vhost configs or certificates. For details, please refer to the official [jwilder/nginx-proxy documentation](https://github.com/jwilder/nginx-proxy).<br><br>
 * If you do not want to or are not able to use the nginx proxy at all (for example, you do not have a DNS entry for your host), you can still use the `docker-compose/metaphactory-blazegraph/docker-compose.yml` script to maintain your deployments.  However, you will need to map/expose the metaphactory docker container port `8080` to a free host port (you basically need one port / deployment). Simply uncomment and modify the port section in the `docker-compose.yml` file and parameterize the exposed port for every deployment trough a environment variable from your .env files.
+
+### Setup with Let's Encrypt
+For Let's Encrypt the system should be accessible from the outside world. Otherwise the setup is exactly the same as for default nginx, but one need to use docker-compose file from the `docker-compose/nginx-letsencrypt`.
 
 
 ## metaphactory / blazegraph Deployment and Maintenance

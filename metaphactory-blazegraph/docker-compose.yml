@@ -36,6 +36,9 @@ services:
      - PLATFORM_OPTS=-Dconfig.environment.sparqlEndpoint=http://${COMPOSE_PROJECT_NAME}-blazegraph:8080/blazegraph/sparql -Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2-trace2.xml ${METAPHACTORY_OPTS}
      - VIRTUAL_HOST=${COMPOSE_PROJECT_NAME}.${HOST_NAME}
      - JAVA_OPTS=-Xmx1g
+     # LETSENCRYPT variables will take effect only when nginx-proxy is setup with Let's Encrypt support
+     - LETSENCRYPT_HOST=${COMPOSE_PROJECT_NAME}.${HOST_NAME}
+     - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
   volumes_from:
      - metaphactory-data
   networks:

@@ -1,16 +1,32 @@
 version: "2.2"
 services:
-  
-  proxy:
-    container_name: "nginx-proxy"
-    image: "jwilder/nginx-proxy:latest"
+  # use separate container for docker-gen to not expose docker socket over the network
+  nginx-proxy-docker-gen:
+    container_name: nginx-proxy-gen
+    image: jwilder/docker-gen:latest
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /home/docker/config/nginx/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
       - /home/docker/config/nginx/certs:/etc/nginx/certs:ro
       - /home/docker/config/nginx/vhost.d:/etc/nginx/vhost.d:ro
-      - /home/docker/config/nginx/conf.d/proxy.conf:/etc/nginx/conf.d/proxy.conf:ro
+      - /home/docker/config/nginx/html:/usr/share/nginx/html:ro
+      - /home/docker/config/nginx/conf.d:/etc/nginx/conf.d:rw
+    networks:
+      - proxy_network
+    command:
+      "-notify-sighup nginx-proxy -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf"
+
+  proxy:
+    container_name: nginx-proxy
+    image: nginx:latest
+    restart: unless-stopped
+    volumes:
+      - /home/docker/config/nginx/certs:/etc/nginx/certs:ro
+      - /home/docker/config/nginx/vhost.d:/etc/nginx/vhost.d:ro
+      - /home/docker/config/nginx/conf.d:/etc/nginx/conf.d:ro
       - /home/docker/config/nginx/htpasswd:/etc/nginx/htpasswd:ro
+      - /home/docker/config/nginx/html:/usr/share/nginx/html:ro
     networks:
       - proxy_network
     ports:

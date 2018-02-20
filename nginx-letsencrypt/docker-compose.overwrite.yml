@@ -1,0 +1,19 @@
+version: "2.2"
+services:
+  nginx-proxy-letsencrypt:
+    container_name: nginx-proxy-letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/docker/config/nginx/conf.d:/etc/nginx/conf.d:rw
+      - /home/docker/config/nginx/vhost.d:/etc/nginx/vhost.d:rw
+      - /home/docker/config/nginx/html:/usr/share/nginx/html:rw
+      - /home/docker/config/nginx/certs:/etc/nginx/certs:rw
+    networks:
+      - proxy_network
+    environment:
+      NGINX_DOCKER_GEN_CONTAINER: "nginx-proxy-gen"
+      NGINX_PROXY_CONTAINER: "nginx-proxy"
+
+
