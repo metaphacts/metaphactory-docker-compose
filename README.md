@@ -81,7 +81,7 @@ For Let's Encrypt the system should be accessible from the outside world. Otherw
 ### Initial Deployment
 To create a new deployment from scratch:
 
-1. Go into the `cd docker-compose/metaphactory-blazegraph` folder and create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
+1. Go into the `cd docker-compose/metaphactory-blazegraph` folder if you want to setup metaphactory together with blazegraph, or `cd docker-compose/metaphactory` if you want to use external triplestore. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
 2. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
 3. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy.
 4. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
