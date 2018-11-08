@@ -1,0 +1,45 @@
+version: "2.2"
+services:
+  blazegraph:
+    environment:
+      - JAVA_OPTS=-Xmx700m
+
+  metaphactory:
+    ports:
+    - "80:8080"
+    environment:
+       - JAVA_OPTS=-Xmx700m
+
+#### GRAPHSCOPE ####
+  graphscope-app-config:
+    container_name: "${COMPOSE_PROJECT_NAME}-gs-app-config"
+    image: "${GS_APP_CONFIG}"
+
+  graphscope-repo-data:
+    container_name: "${COMPOSE_PROJECT_NAME}-gs-repo-data"
+    image: "${GS_REPO_DATA}"
+
+  graphscope:
+    container_name: "${COMPOSE_PROJECT_NAME}-graphscope"
+    image: "${GRAPHSCOPE}"
+    restart: unless-stopped
+    environment:
+      # -Ddw.searchhaus.repositoryDataStore.remoteEndpoint is the endpoint used to get the data which will be indexed by graphscope
+      # -Ddw.searchhaus.repositoryDataStore.localEndpoint is the endpoint of GraphScope which is used to answer the SERVICE clause callbacks (needs to be accessible from the graph database or from ephedra)
+      JAVA_OPTS: "-Ddw.searchhaus.repositoryDataStore.remoteEndpoint=http://blazegraph:8080/blazegraph/sparql -Ddw.searchhaus.repositoryDataStore.localEndpoint=http://graphscope:9090/graphscope/api/sparql -Ddw.searchhaus.dataSet.replaceInEntityLinks.prefix=https://localhost/resource/?uri= -Ddw.server.applicationContextPath=/graphscope -Ddw.server.adminContextPath=/graphscope/jetty-admin"
+      XMX: "-Xmx1G"
+      ## SH_* variables are used for backend-location.js, which is used to locate the admin_app)
+      ## e.g. http://gs-dockercompose-dev.localhost/proxy/graphscope/gs/admin/#/
+      SH_API_ENDPOINT: "/proxy/graphscope"
+      SH_FRONTEND_URL: ""
+      SH_FRONTEND_AUTHORIZATION: ""
+    volumes_from:
+      - graphscope-repo-data
+      - graphscope-app-config
+    networks:
+      - metaphactory_network
+    depends_on:
+      - metaphactory
+      - blazegraph
+      - graphscope-repo-data
+      - graphscope-app-config
