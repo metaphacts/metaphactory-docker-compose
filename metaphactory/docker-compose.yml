@@ -9,7 +9,7 @@ services:
   image: "${METAPHACTORY_IMAGE}"
   restart: unless-stopped
   environment:
-     - PLATFORM_OPTS=-Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2-trace2.xml ${METAPHACTORY_OPTS}
+     - PLATFORM_OPTS=${METAPHACTORY_OPTS}
      - VIRTUAL_HOST=${COMPOSE_PROJECT_NAME}.${HOST_NAME}
      - JAVA_OPTS=-Xmx1g
      - GENERATE_METAPHACTORY_PASSWORD=${GENERATE_METAPHACTORY_PASSWORD}
