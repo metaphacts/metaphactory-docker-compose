@@ -6,8 +6,6 @@ services:
   restart: unless-stopped
   volumes:
      - blazegraph-data:/blazegraph-data
-  volumes_from:
-     - blazegraph-data
   environment:
      - JAVA_OPTS=-Xmx1g
   networks:
