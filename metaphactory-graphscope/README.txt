@@ -12,7 +12,7 @@ OR
 
 * Create /config/proxy.prop
 ---Example---
-config.proxy.graphscope.targetUri=http://graphscope:9090/graphscope/api
+config.proxy.graphscope.targetUri=http://graphscope:9090/graphscope
 config.proxy.graphscope.loginName=admin
 config.proxy.graphscope.loginPassword=<adminpassword>
 ---
@@ -27,11 +27,5 @@ See help page for details on the proxy setup: https://help.metaphacts.com/resour
   <graphscope></graphscope>
 
 4.) Load some data to metaphactory
-5.) Start the GraphScope indexing
-Either via the admin app: http://localhost/proxy/graphscope/gs/admin/#/?login
-
-OR
-
-via API Call using your metaphactory user
-
-curl -X POST http://user:password@localhost/proxy/graphscope/api/data/stores/dataStore/rebuildIndexes
+5.) Go to GraphScope in metaphactory's administration section
+6.) Go to tab "Data" and click on "reindex all"
