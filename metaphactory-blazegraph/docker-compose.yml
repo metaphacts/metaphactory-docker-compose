@@ -1,23 +1,15 @@
 version: "2.2"
 services:
- blazegraph-data:
-  container_name: "${COMPOSE_PROJECT_NAME}-blazegraph-data"
-  image: "alpine:3.4"
-  volumes:
-     - /blazegraph-data
-
  blazegraph:
   container_name: "${COMPOSE_PROJECT_NAME}-blazegraph"
   image: "${BLAZEGRAPH_IMAGE}"
   restart: unless-stopped
-  volumes_from:
-     - blazegraph-data
+  volumes:
+     - blazegraph-data:/blazegraph-data
   environment:
      - JAVA_OPTS=-Xmx1g
   networks:
      - metaphactory_network
-  depends_on:
-      - blazegraph-data
   logging:
    driver: json-file
    options:
@@ -28,5 +20,8 @@ services:
   environment:
      - PLATFORM_OPTS=-Dconfig.environment.sparqlEndpoint=http://${COMPOSE_PROJECT_NAME}-blazegraph:8080/blazegraph/sparql -Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2-trace2.xml ${METAPHACTORY_OPTS}
   depends_on:
-       - metaphactory-data
        - blazegraph
+
+
+volumes:
+  blazegraph-data:
