@@ -14,7 +14,7 @@ services:
      - LETSENCRYPT_HOST=${COMPOSE_PROJECT_NAME}.${HOST_NAME}
      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
   networks:
-     - default
+#     - default
      - metaphactory_network
   volumes:
      - metaphactory-runtime-data:/runtime-data
@@ -28,7 +28,7 @@ volumes:
   metaphactory-runtime-data:
 
 networks:
-  default:
-    external:
-      name: nginx_proxy_network
+#  default:
+#    external:
+#      name: nginx_proxy_network
   metaphactory_network:
