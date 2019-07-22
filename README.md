@@ -1,4 +1,4 @@
-# metaphactory / blazegraph deployments with docker-compose
+# metaphactory deployments with docker-compose
 
 **Prerequisites:**
 
@@ -6,8 +6,56 @@
 * docker-compose installed (version >= 1.14, check with `docker-compose --version`)
 * outgoing HTTP/HTTPS traffic, allowing to access external docker registries (e.g. docker public or other private/corporate docker registries)
 
+## metaphactory / blazegraph Deployment and Maintenance
 
-## Initial Setup: NGINX Proxy Container
+**Prerequisites:**
+
+To perform any deployments or updates, you will first need to login to the metaphact's docker registry with your docker hub account, i.e. run `docker login`.
+Please request your account to be added via **support@metaphacts.com** if you have not yet done so.
+
+### Initial Deployment
+To create a new deployment from scratch chose from these two options:
+
+#### Metaphactory with blazegraph triplestore included (recommended for initial tests)
+
+1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
+2. Go into the `cd metaphactory-docker-compose/metaphactory-blazegraph` folder 
+3. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
+4. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
+5. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+6. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+7. Open `http://localhost:10214` and login with user `admin` and password `admin`
+
+#### Metaphactory with external triplestore
+Use this option for external triplestores like Stardog, Neptune, GraphDB or Virtuoso.
+
+1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
+2. Go into the `cd metaphactory-docker-compose/metaphactory` if you want to use external triplestore. 
+3. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
+4. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
+5. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+6. For non-authenticated endpoints change the entry for `METAPHACTORY_OPTS` to `METAPHACTORY_OPTS=-Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2.xml -Dconfig.environment.sparqlEndpoint=<endpoint>` where `<endpoint>` is the SPARQL endpoint for your external triplestore
+7. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+8. Open `http://localhost:10214` and login with user `admin` and password `admin`
+
+**Please note:** If you want to connect to an existing Stardog, GraphDB, Neptune or Virtuoso instance, your SPARQL endpoint is most likley HTTP Basic Auth protected. In this case you will have to omit step 5 and, once the platform started and on initial login, you will be asked to configure the connection to your default repository via the [Repository Manager](https://help.metaphacts.com/resource/Help:RepositoryManager). 
+See also: [How to connect to Stardog](https://help.metaphacts.com/resource/Help:HowToConnectToStardog)
+
+### Update of Deployments
+The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory or blazegraph, but leaving the deployment specific data and configuration assets untouched. 
+
+1. Modify the .env file in the folder of the deployment you want to update and increase/change the docker version tag of the metaphactory or blazegraph container i.e. `METAPHACTORY_IMAGE` and/or `BLAZEGRAPH_IMAGE`.
+2. Run `docker-compose up -d` will re-create only the containers, that have been changed.
+
+### Deletion of Deployments
+Run `docker-compose down` in the folder for deployment you want to purge. Please note, that **all containers and non-external volumes and networks** for the deployment will be removed and deleted. Make sure that you are in the correct folder (where the respective `.env` file for the deployment is located), before executing the down command.
+
+## Optional Setup: NGINX Proxy Container
+
+**Please note:**
+
+* This setup is currently not compatible with Windows hosts
+
 It is recommended to use a proxy container with virtual host mappings to proxy the incoming HTTP traffic to the individual container instances. Reasons are:
 
 * Security
@@ -19,14 +67,11 @@ It is recommended to use a proxy container with virtual host mappings to proxy t
 	* Changes to the underlying (container) setup/infrastructure can be handled transparently.
 * Single place for special HTTP settings i.e. easy to enable CORS, GZIP, HTTP2 or modifying HTTP header for individual or all deployments.
 	
-
-
 **Prerequisites:**
 
 * Wildcard CNAME record for the hostname DNS entry e.g. *.mydocker.example.com
 * Inbound rules for Port 80, 443 in firewall
 * Wildcard SSL certificate for the DNS entry *.mydocker.example.com placed in `/home/docker/config/nginx/certs`. Obviously, it is not required to use HTTPS. However, while the obvious reason for taking this extra step is security, there is another positive side-effect: Performance i.e. only with HTTPS new HTTP2 features are available, which will greatly speed-up the performance of many client-side applications.
-
 
 ### Setup
 1. Create the initial folder structure for nginx config files i.e. so that one can mount the folder when creating the proxy container and place additional config files later if needed: `mkdir -p /home/docker/config/nginx/{certs,htpasswd,vhost.d,conf.d}` and `touch /home/docker/config/nginx/conf.d/proxy.conf`.
@@ -68,29 +113,5 @@ Go into folder `docker-compose/nginx`
 * If you do not want to use HTTPS, simple modify the nginx `docker-compose/nginx/docker-compose.yml` file i.e. remove/comment the line where the 443 is exposed and where the path to the `/home/docker/config/nginx/certs` folder is mounted as volume. The volumes section is also the place to be modified, in case you want to use a different location to place your configuration files including specific vhost configs or certificates. For details, please refer to the official [jwilder/nginx-proxy documentation](https://github.com/jwilder/nginx-proxy).<br><br>
 * If you do not want to or are not able to use the nginx proxy at all (for example, you do not have a DNS entry for your host), you can still use the `docker-compose/metaphactory-blazegraph/docker-compose.yml` script to maintain your deployments.  However, you will need to map/expose the metaphactory docker container port `8080` to a free host port (you basically need one port / deployment). Simply uncomment and modify the port section in the `docker-compose.yml` file and parameterize the exposed port for every deployment trough a environment variable from your .env files.
 
-### Setup with Let's Encrypt
+### Optional: Setup with Let's Encrypt
 For Let's Encrypt the system should be accessible from the outside world. Otherwise the setup is exactly the same as for default nginx, but one need to use docker-compose file from the `docker-compose/nginx-letsencrypt`.
-
-
-## metaphactory / blazegraph Deployment and Maintenance
-
-**Prerequisites:**
-
- To perform any deployments or updates, you will first need to login to the metaphact's docker registry with your metaphacts account i.e. run `docker login docker.metaphacts.com`.
-
-### Initial Deployment
-To create a new deployment from scratch:
-
-1. Go into the `cd docker-compose/metaphactory-blazegraph` folder if you want to setup metaphactory together with blazegraph, or `cd docker-compose/metaphactory` if you want to use external triplestore. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
-2. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
-3. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy.
-4. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-
-### Update of Deployments
-The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory or blazegraph, but leaving the deployment specific data and configuration assets untouched.
-
-1. Modify the `.env` file in the folder of the deployment you want to update and increase/change the docker version tag of the metaphactory or blazegraph container i.e. `METAPHACTORY_IMAGE` and/or `BLAZEGRAPH_IMAGE`. Do not change `METAPHACTORY_DATA_IMAGE` if you want do keep your current configuration.
-2. Run `docker-compose up -d` will re-create only the containers, that has been changed.
-
-### Deletion of Deployments
-Run `docker-compose down` in the folder for deployment you want to purge. Please note, that **all containers and non-external volumes and networks** for the deployment will be removed and deleted. Make sure that you are in the correct folder (where the respective `.env` file for the deployment is located), before executing the down command.
