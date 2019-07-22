@@ -1,7 +1,7 @@
 Setup to start metaphactory and GraphScope
 with blazegraph
 
+0.) Read metaphactory-docker-compose/README.md  
 1.) Go to metaphactory-docker-compose⁩/⁨metaphactory-blazegraph⁩/graphscope-service-template⁩
-2.) Open the .env file and rename COMPOSE_PROJECT_NAME=
-3.) Run "docker-compose up -d"
+2.) Run "docker-compose up -d"
 
