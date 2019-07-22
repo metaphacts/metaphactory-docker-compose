@@ -18,15 +18,9 @@ services:
     image: "${GRAPHSCOPE}"
     restart: unless-stopped
     environment:
-      # -Ddw.searchhaus.repositoryDataStore.remoteEndpoint is the endpoint used to get the data which will be indexed by graphscope
-      # -Ddw.searchhaus.repositoryDataStore.localEndpoint is the endpoint of GraphScope which is used to answer the SERVICE clause callbacks (needs to be accessible from the graph database or from ephedra)
-      JAVA_OPTS: "-Ddw.searchhaus.repositoryDataStore.remoteEndpoint=http://blazegraph:8080/blazegraph/sparql -Ddw.searchhaus.repositoryDataStore.localEndpoint=http://graphscope:9090/graphscope/api/sparql -Ddw.searchhaus.dataSet.replaceInEntityLinks.prefix=/resource/?uri="
+      JAVA_OPTS: ""
       XMX: "-Xmx1G"
-      ## SH_* variables are used for backend-location.js, which is used to locate the admin_app)
-      ## e.g. http://gs-dockercompose-dev.localhost/proxy/graphscope/gs/admin/#/
-      SH_API_ENDPOINT: "/proxy/graphscope"
-      SH_FRONTEND_URL: ""
-      SH_FRONTEND_AUTHORIZATION: ""
+      GS_CONFIGFILE: "config.yml"
     volumes:
       - ../metaphactory-blazegraph/graphscope-service-template/gs-config/gs-default/config:/opt/config
       - ../metaphactory-blazegraph/graphscope-service-template/gs-config/gs-default/logs:/opt/logs

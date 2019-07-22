@@ -12,7 +12,7 @@ searchhaus:
     managed: false
     mode: quads
     internalKeyValidation: false
-    remoteEndpoint: http://blazegraph:10214/blazegraph/sparql
+    remoteEndpoint: http://blazegraph:8080/blazegraph/sparql
     localEndpoint: http://graphscope:9090/graphscope/api/sparql
     disableBlazegraphOptimizer: "true"
 
@@ -25,20 +25,22 @@ searchhaus:
     enableMultiConceptQueries: true
 
     priors:
+      ## blazegraph only, use frequency without -bg suffix otherwise
       #- type: frequency-bg
       #  predicates: true
+      ## blazegraph only, use pagerank without -bg suffix otherwise
       - type: pagerank-bg
       - type: configuration
         predicateWeights:
-          http://www.w3.org/2004/02/skos/core#prefLabel: 2
-          http://www.w3.org/2000/01/rdf-schema#label : 2
+          http://www.w3.org/2004/02/skos/core#prefLabel: 2.0
+          http://www.w3.org/2000/01/rdf-schema#label : 2.0
           http://xmlns.com/foaf/0.1/name : 1.5
           http://purl.org/dc/terms/title : 1.5
           http://www.w3.org/2004/02/skos/core#altLabel: 1.1
 
     queryTranslation:
-      timeLimit: 20000
-      validityCheckTimeLimit: 15000
+      timeLimit: 5000
+      validityCheckTimeLimit: 5000
       enableDirectSubgraphGeneration: false
       maxSubgraphSize: 4
       maxTranslations: 1
@@ -135,7 +137,7 @@ searchhaus:
 
 #    concepts:
 #          # Concepts are identified by their URI.
-#        - concept: http://www.aifb.kit.edu/id/Kategorie-3AVortrag
+#        - concept: http://xmlns.com/foaf/0.1/Person
 #          ignoredPredicates:
 #            - http://xmlns.com/foaf/0.1/firstName
 #            - http://xmlns.com/foaf/0.1/lastName
@@ -167,12 +169,12 @@ searchhaus:
         roles:
           - ROLE_ADMIN
           - ROLE_USER
-      - name: dataupdate
-        roles:
-          - ROLE_DATA_UPDATE
-      - name: searcher
-        roles:
-          - ROLE_USER
+    #  - name: dataupdate
+    #    roles:
+    #      - ROLE_DATA_UPDATE
+    #  - name: searcher
+    #    roles:
+    #      - ROLE_USER
 
 server:
   type: simple
