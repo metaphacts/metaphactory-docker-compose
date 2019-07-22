@@ -1,0 +1,38 @@
+version: "2.2"
+services:
+  blazegraph:
+    environment:
+      - JAVA_OPTS=-Xmx700m
+
+  metaphactory:
+    #ports:
+    #- "8080:8080"
+    environment:
+       - JAVA_OPTS=-Xmx700m
+    volumes:
+      - ../metaphactory-blazegraph/graphscope-service-template/app-graphscope/:/apps/app-graphscope
+
+#### GRAPHSCOPE ####
+  graphscope:
+    container_name: "${COMPOSE_PROJECT_NAME}-graphscope"
+    image: "${GRAPHSCOPE}"
+    restart: unless-stopped
+    environment:
+      # -Ddw.searchhaus.repositoryDataStore.remoteEndpoint is the endpoint used to get the data which will be indexed by graphscope
+      # -Ddw.searchhaus.repositoryDataStore.localEndpoint is the endpoint of GraphScope which is used to answer the SERVICE clause callbacks (needs to be accessible from the graph database or from ephedra)
+      JAVA_OPTS: "-Ddw.searchhaus.repositoryDataStore.remoteEndpoint=http://blazegraph:8080/blazegraph/sparql -Ddw.searchhaus.repositoryDataStore.localEndpoint=http://graphscope:9090/graphscope/api/sparql -Ddw.searchhaus.dataSet.replaceInEntityLinks.prefix=/resource/?uri="
+      XMX: "-Xmx1G"
+      ## SH_* variables are used for backend-location.js, which is used to locate the admin_app)
+      ## e.g. http://gs-dockercompose-dev.localhost/proxy/graphscope/gs/admin/#/
+      SH_API_ENDPOINT: "/proxy/graphscope"
+      SH_FRONTEND_URL: ""
+      SH_FRONTEND_AUTHORIZATION: ""
+    volumes:
+      - ../metaphactory-blazegraph/graphscope-service-template/gs-config/gs-default/config:/opt/config
+      - ../metaphactory-blazegraph/graphscope-service-template/gs-config/gs-default/logs:/opt/logs
+      - ../metaphactory-blazegraph/graphscope-service-template/gs-config/gs-default/repository:/opt/repository
+    networks:
+      - metaphactory_network
+    depends_on:
+      - metaphactory
+      - blazegraph
