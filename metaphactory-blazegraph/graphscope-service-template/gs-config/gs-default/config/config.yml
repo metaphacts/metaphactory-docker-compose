@@ -12,6 +12,9 @@ searchhaus:
     managed: false
     mode: quads
     internalKeyValidation: false
+    ## user and password for authentication at the SPARQL endpoint
+    #remoteUser: admin
+    #remotePassword: admin
     remoteEndpoint: http://blazegraph:8080/blazegraph/sparql
     localEndpoint: http://graphscope:9090/graphscope/api/sparql
     disableBlazegraphOptimizer: "true"

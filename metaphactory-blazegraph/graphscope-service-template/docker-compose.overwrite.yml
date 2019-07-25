@@ -6,11 +6,11 @@ services:
 
   metaphactory:
     #ports:
-    #- "8080:8080"
+    # - "10214:8080"
     environment:
        - JAVA_OPTS=-Xmx700m
     volumes:
-      - ../metaphactory-blazegraph/graphscope-service-template/app-graphscope/:/apps/app-graphscope
+      - ../metaphactory-blazegraph/graphscope-service-template/app-graphscope.zip:/apps/app-graphscope.zip
 
 #### GRAPHSCOPE ####
   graphscope:

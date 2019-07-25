@@ -26,6 +26,21 @@ To create a new deployment from scratch chose from these two options:
 6. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 7. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
+#### Metaphactory with GraphScope and with blazegraph (recommended for initial tests)
+
+1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
+2. Go into the `cd metaphactory-docker-compose/metaphactory-blazegraph` folder
+3. Create a copy of the `graphscope-service-template` folder i.e. `cp -r graphscope-service-template my-gs-deployment`. The main idea idea is to maintain one subfolder for every deployment.
+4. Adjust the path of the volumes by replacing `graphscope-service-template` to `my-gs-deployment`
+5. Go into the newly created folder `my-gs-deployment` and open the file `.env` e.g. `vi .env`
+6. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-gs-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+7. Run `docker-compose up -d`. It is **important to run the command in the my-gs-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+
+##### Configuration parameters for GraphScope
+* Change users/password of GraphScope
+** metaphactory connects to GraphScope using the user and password specified in the proxy.prop configuration (provided in my-gs-deployment/app-graphscope.zip).
+** Create/Update users and passwords of GraphScope using htpasswd (https://httpd.apache.org/docs/2.4/programs/htpasswd.html) and the users.htpasswd file in the folder my-gs-deployment/gs-config/gs-default/config/
+
 #### Metaphactory with external triplestore
 Use this option for external triplestores like Stardog, Neptune, GraphDB or Virtuoso.
 
