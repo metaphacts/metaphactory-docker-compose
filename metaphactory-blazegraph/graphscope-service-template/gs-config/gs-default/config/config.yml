@@ -41,6 +41,24 @@ searchhaus:
           http://purl.org/dc/terms/title : 1.5
           http://www.w3.org/2004/02/skos/core#altLabel: 1.1
 
+      #  # adjust the weight of certain classes
+      #  conceptWeights:
+      #    # Painting
+      #    http://www.wikidata.org/entity/Q3305213 : 3
+      #
+      #  # adjust the weight for property of a certain class
+      #  conceptPredicateWeights:
+      #    http://example.org/Person :
+      #      http://www.w3.org/2000/01/rdf-schema#comment : 1.5
+      #
+      #  # adjust the weight for certain entities
+      #  entityWeights:
+      #    # Mona Lisa
+      #    http://www.wikidata.org/entity/Q12418: 10
+      #    # Bob
+      #    http://example.org/bob#me : 5
+
+
     queryTranslation:
       timeLimit: 5000
       validityCheckTimeLimit: 5000
