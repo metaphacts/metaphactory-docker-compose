@@ -1,0 +1,28 @@
+version: "2.2"
+services:
+  metaphactory:
+    #metaphactory-overwites here
+    ports:
+      - "10214:8080"
+    #environment:
+    #  - JAVA_OPTS=-Xmx1g
+    volumes:
+      - ../metaphactory/graphscope-service-template/app-graphscope.zip:/apps/app-graphscope.zip
+
+#### GRAPHSCOPE ####
+  graphscope:
+    container_name: "${COMPOSE_PROJECT_NAME}-graphscope"
+    image: "${GRAPHSCOPE}"
+    restart: unless-stopped
+    environment:
+      JAVA_OPTS: ""
+      XMX: "-Xmx4G"
+      GS_CONFIGFILE: "config.yml"
+    volumes:
+      - ../metaphactory/graphscope-service-template/gs-config/gs-ephedra-default/config:/opt/config
+      - ../metaphactory/graphscope-service-template/gs-config/gs-ephedra-default/logs:/opt/logs
+      - ../metaphactory/graphscope-service-template/gs-config/gs-ephedra-default/repository:/opt/repository
+    networks:
+      - metaphactory_network
+    depends_on:
+      - metaphactory
