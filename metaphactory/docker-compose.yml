@@ -18,6 +18,7 @@ services:
      - metaphactory_network
   volumes:
      - metaphactory-runtime-data:/runtime-data
+     - metaphactory-apps:/apps
   logging:
    driver: json-file
    options:
@@ -26,6 +27,7 @@ services:
 
 volumes:
   metaphactory-runtime-data:
+  metaphactory-apps:
 
 networks:
 #  default:
