@@ -1,0 +1,20 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rep: <http://www.openrdf.org/config/repository#> .
+@prefix sail: <http://www.openrdf.org/config/sail#> .
+@prefix sr: <http://www.openrdf.org/config/repository/sail#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[] a rep:Repository;
+  rep:repositoryID "graphscope-ephedra";
+  rep:repositoryImpl [
+      rep:repositoryType "metaphacts:FederationSailRepository";
+      sr:sailImpl [
+          <http://www.metaphacts.com/ontologies/platform/ephedra#defaultMember> "default";
+          sail:sailType "metaphacts:Federation";
+          <http://www.openrdf.org/config/sail/federation#member> [
+              <http://www.metaphacts.com/ontologies/platform/ephedra#delegateRepositoryID> "graphscope-lookup";
+              <http://www.metaphacts.com/ontologies/platform/ephedra#serviceReference> <http://www.metaphacts.com/ontologies/platform/repository/federation#graphscope-lookup>
+            ]
+        ]
+    ];
+  rdfs:label "Ephedra federation for GraphScope" .

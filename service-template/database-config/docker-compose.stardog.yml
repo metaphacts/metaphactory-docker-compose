@@ -1,0 +1,24 @@
+version: "2.2"
+services:
+  stardog:
+    #stardog-overwrites here
+    volumes:
+     - ./database-config/stardog-config/stardog-license-key.bin:/var/opt/stardog/stardog-license-key.bin
+     - ./database-config/stardog-config/stardog.properties:/var/opt/stardog/stardog.properties
+     - ./database-config/stardog-config/database-template.properties:/var/opt/stardog/database-template.properties
+     # Consider to persist database file on the host machine via mounted volumes
+     #  - ./stardog:/var/opt/stardog                  # main Stardog directory where database files will be stored, ideally on SSD
+     #  - ./stardog-tmp:/var/opt/tmp                  # directory for temporary files (potentially big)
+     #  - ./stardog-ext:/var/opt/stardog-ext          # directory for additional jar files, e.g. jdbc drivers etc
+     #  - ./stardog-opennlp:/var/opt/stardog-opennlp  # directory for opennlp models
+
+     # Optionally, for RDF files to be imported and virtual graph configs
+     #- "/local/host/rdf-datasets:/datasets"
+     #- "/local/host/virtual-graphs-config:/var/opt/virtual-graphs-config"
+    #ports:
+    # - "5820:5820" # expose on local host port 5820 i.e. for local development
+    #environment:
+    #  - STARDOG_SERVER_JAVA_ARGS=-Djava.io.tmpdir=/var/opt/tmp -Xms4g -Xmx4g -XX:MaxDirectMemorySize=8g
+  metaphactory:
+    volumes:
+     - ./database-config/stardog-repository-config/myDB.ttl:/runtime-data/config/repositories/default.ttl:rw

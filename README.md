@@ -16,122 +16,52 @@ Please request your account to be added via **support@metaphacts.com** if you ha
 ### Initial Deployment
 To create a new deployment from scratch chose from these two options:
 
-#### Metaphactory with blazegraph triplestore included (recommended for initial tests)
+#### metaphactory Deployment
 
 1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
-2. Go into the `cd metaphactory-docker-compose/metaphactory-blazegraph` folder 
-3. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
-4. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
-5. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-6. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-7. Open `http://localhost:10214` and login with user `admin` and password `admin`
-
-#### Metaphactory with GraphScope and with blazegraph (recommended for initial tests)
-
-1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
-2. Go into the `cd metaphactory-docker-compose/metaphactory-blazegraph` folder
-3. Create a copy of the `graphscope-service-template` folder i.e. `cp -r graphscope-service-template my-gs-deployment`. The main idea idea is to maintain one subfolder for every deployment.
-4. Adjust the path of the volumes by replacing `graphscope-service-template` to `my-gs-deployment`
-5. Go into the newly created folder `my-gs-deployment` and open the file `.env` e.g. `vi .env`
-6. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-gs-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-7. Run `docker-compose up -d`. It is **important to run the command in the my-gs-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-
-##### Change users/password of GraphScope
-* metaphactory connects to GraphScope using the user and password provided in the proxy.prop configuration (provided in my-gs-deployment/app-graphscope.zip).
-* Create/Update users and passwords of GraphScope using htpasswd (https://httpd.apache.org/docs/2.4/programs/htpasswd.html) and the users.htpasswd file in the folder my-gs-deployment/gs-config/gs-ephedra-default/config/
-
-#### Metaphactory with external triplestore
-Use this option for external triplestores like Stardog, Neptune, GraphDB or Virtuoso.
-
-1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
-2. Go into the `cd metaphactory-docker-compose/metaphactory` if you want to use external triplestore. 
-3. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
-4. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
-5. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-6. Configure authentication
-    * For non-authenticated endpoints change the entry for `METAPHACTORY_OPTS` to `METAPHACTORY_OPTS=-Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2.xml -Dconfig.environment.sparqlEndpoint=<endpoint>` where `<endpoint>` is the SPARQL endpoint for your external triplestore.
-    * For authenticated endpoints (e.g. HTTP Basic Auth) proceed to the next step and start the platform. On the initial login, you will be asked to configure the connection to your default repository via the [Repository Manager](https://help.metaphacts.com/resource/Help:RepositoryManager). See also: [How to connect to Stardog](https://help.metaphacts.com/resource/Help:HowToConnectToStardog)
-7. Run `docker-compose up -d`. It is **important to run the command in the my-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+2. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The idea is to maintain one subfolder for every deployment.
+3. Change into the newly created folder `my-deployment` and choose one option below:
+	1. To deploy **metaphactory with Blazegraph** included (recommended for initial tests) run `cp ./database-config/.env_blazegraph .env`.
+	2. To deploy **metaphactory standalone** to connect to an external triple store later on run `cp ./database-config/.env_default .env`.
+	3. To deploy **metaphactory with Stardog** included run `cp ./database-config/.env_stardog .env`. **Please note:** this requires that you own a valid Stardog license file.
+4. Open the file `.env` e.g. `vi .env` and perform following changes:
+	1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+	2. Please note that the deployment will contain GraphScope (`https://www.metaphacts.com/graphscope`), which runs in its own container and requires additional 4GB of memory. Remove `:./docker-compose.graphscope.yml` from the `COMPOSE_FILE` parameter to deactivate GraphScope.
+5. (Only for **metaphactory with Stardog**) Please perform additional steps below to prepare the Stardog configuration:
+	1. Add your Stardog license into the `/database-config/stardog-config` folder by replacing the existing file `stardog-license-key.bin`. 
+	2. You may want to modify Stardog specific parameters in the `/database-config/stardog-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
+	3. You can also modify the `/database-config/stardog-repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with stardog. Please note that this also requires modification of the database configuration in `/database-config/stardog-config/database-template.properties`.
+	4. Also note that GraphScope has a reference to the database as well, which would need to be updated in `graphscope-config/stardog-config.yml` with the parameter `remoteEndpoint`, in case of changes.
+6. Run `docker-compose up -d`. It is **important to run the command in the my-deployment folder(containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+7. Please perform additional steps below, in case you chose to deploy **metaphactory with Stardog**:
+	1. Run `docker exec -it my-deployment-1-stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database (change the docker container name from `my-deployment-1-stardog` to the correct name). The name of your stardog container was displayed as part of the output of the `docker-compose up -d` command, or you can also run `docker ps -f name=stardog` to look it up again. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file). 
 8. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
-
-#### Metaphactory and GraphScope using Ephedra with external triplestore
-Use this option for metaphactory and GraphScope using Ephedra and an external triplestores like Neptune, Stardog, GraphDB or Virtuoso.
-
-1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
-2. Go into the `cd metaphactory-docker-compose/metaphactory` if you want to use external triplestore.
-3. Create a copy of the `graphscope-service-template` folder i.e. `cp -r graphscope-service-template my-gs-deployment`. The main idea idea is to maintain one subfolder for every deployment.
-4. Go into the newly created folder `my-gs-deployment` and open the file `.env` e.g. `vi .env`
-5. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-gs-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-6. Configure authentication
-    * For non-authenticated endpoints change the entry for `METAPHACTORY_OPTS` to `METAPHACTORY_OPTS=-Dlog4j.configurationFile=file:///var/lib/jetty/webapps/etc/log4j2.xml -Dconfig.environment.sparqlEndpoint=<endpoint>` where `<endpoint>` is the SPARQL endpoint for your external triplestore.
-    * For authenticated endpoints (e.g. HTTP Basic Auth) proceed to the next step and start the platform. On the initial login, you will be asked to configure the connection to your default repository via the [Repository Manager](https://help.metaphacts.com/resource/Help:RepositoryManager). See also: [How to connect to Stardog](https://help.metaphacts.com/resource/Help:HowToConnectToStardog)
-7. Run `docker-compose up -d`. It is **important to run the command in the folder my-gs-deployment (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-8. Open `http://localhost:10214` and login with user `admin` and password `admin`
-
-##### Change users/password of GraphScope
-* metaphactory connects to GraphScope using the user and password provided in the proxy.prop configuration (provided in my-gs-deployment/app-graphscope.zip).
-* Create/Update users and passwords of GraphScope using htpasswd (https://httpd.apache.org/docs/2.4/programs/htpasswd.html) and the users.htpasswd file in the folder my-gs-deployment/gs-config/gs-ephedra-default/config/
-* GraphScope connects to the graphscope-ephedra repository of metaphactory using the user and password provided in my-gs-deployment/gs-config/gs-ephedra-default/config/config.yml through the parameters `remoteUser: <user-name>` and `remotePassword: <password>`. The provided user needs sparql:graphscope-ephedra:query:* and proxy:graphscope permissions.
-
-#### metaphactory with Stardog included
-
-**Additional Prerequisites:**
-
-* Stardog license file
-
-**Deployment Instructions**
-
-1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
-2. Go into the `cd metaphactory-docker-compose/metaphactory-stardog` folder 
-3. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The main idea idea is to maintain one subfolder for every deployment.
-4. Go into the newly created folder `my-deployment` and open the file `.env` e.g. `vi .env`
-5. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-6. Add your Stardog license into the `stardog-config` folder and replace the existing file `stardog-license-key.bin`. 
-7. You may want to modify Stardog or metaphactory specific parameters in the `docker-compose.overwrite.yml` file i.e. changing the default memory setting
-8. You can also modify the `repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with stardog. Please note that this also requires modification of the database configuration in `stardog-config/database-template.properties`.
-9. Run `docker-compose up -d`. It is **important to run the command in the my-deployment folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-10. Run `docker exec -it my-deployment-stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database (change the docker container name from `my-deployment-stardog` to the correct name). The name of your stardog container was displayed as part of the output of the `docker-compose up -d` command, or you can also run `docker ps -f name=stardog` to look it up again. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file).
-**Please note:** For the creation of the stardog database the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
-11. Open `http://localhost:10214` and login with user `admin` and password `admin`
+**Please note:** For the creation of the stardog database (if chosen above) the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
 
 **Troubleshooting**
+
 Please run `docker-compose down` before running `docker-compose up` after failed attempts (for example due to missing license file), especially if you experience errors like `unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type`.
 
-#### Metaphactory with GraphScope and Stardog included
+## Change users/password of GraphScope
+* The `GraphScope service user` can be created or updated using htpasswd (`https://httpd.apache.org/docs/2.4/programs/htpasswd.html`) and is stored in the `users.htpasswd` file in the folder `graphscope-config`
+#### For GRAPHSCOPE_CONFIGURATION=default (see in .env file)
+* **metaphactory to GraphScope** connection is with the user and password provided in the `proxy.prop` configuration (provided in `graphscope-apps/app-graphscope-default/config`).
+* **GraphScope to graphscope-ephedra repository of metaphactory** using the user and password provided in `graphscope-config/default-config.yml` through the parameters `remoteUser` and `remotePassword`. The provided user needs `sparql:graphscope-ephedra:query:*` and `proxy:graphscope` permissions in metaphactory.
+#### For GRAPHSCOPE_CONFIGURATION=blazegraph (see in .env file)
+* **metaphactory to GraphScope** connection is with the user and password provided in the `proxy.prop` configuration (provided in `graphscope-apps/app-graphscope-blazegraph/config`).
+* **GraphScope to Blazegraph** using the user and password provided in `graphscope-config/blazegraph-config.yml` through the parameters `remoteUser: <user-name>` and `remotePassword: <password>`. 
+#### For GRAPHSCOPE_CONFIGURATION=stardog (see in .env file)
+* **metaphactory to GraphScope** connection is with the user and password provided in the `proxy.prop` configuration (provided in `graphscope-apps/app-graphscope-stardog/config`).
+* **GraphScope to Stardog** using the user and password provided in `graphscope-config/stardog-config.yml` through the parameters `remoteUser: <user-name>` and `remotePassword: <password>`, as well as `remoteEndpoint` to specify the Stardog SPARQL endpoint and utilized database name.
 
-**Additional Prerequisites:**
+## Update of Deployments
+The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory, GraphScope or blazegraph, but leaving the deployment specific data and configuration assets untouched. 
 
-* Stardog license file
-
-**Deployment Instructions**
-
-1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
-2. Go into the `cd metaphactory-docker-compose/metaphactory-stardog` folder
-3. Create a copy of the `graphscope-service-template` folder i.e. `cp -r graphscope-service-template my-gs-deployment`. The main idea idea is to maintain one subfolder for every deployment.
-4. Go into the newly created folder `my-gs-deployment` and open the file `.env` e.g. `vi .env`
-5. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-6. Add your Stardog license into the `stardog-config` folder and replace the existing file `stardog-license-key.bin`.
-7. You may want to modify Stardog or metaphactory specific parameters in the `docker-compose.overwrite.yml` file i.e. changing the default memory setting
-8. You can also modify the `repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with stardog. If you changed the settings (database name, credentials, etc.), you may need to adjust the config of GraphScope in `my-gs-deployment/gs-config/gs-default-stardog/config/config.yml`.
-9. Run `docker-compose up -d`. It is **important to run the command in the my-deployment folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-10. Run `docker exec -it my-deployment-stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database (change the docker container name from `my-deployment-stardog` to the correct name). The name of your stardog container is for example displayed as part of the output of the `docker-compose up -d` command. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file).
-**Please note:** For the creation of the stardog database the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
-11. Open `http://localhost:10214` and login with user `admin` and password `admin`
-
-##### Configuration parameters for GraphScope
-* Change users/password of GraphScope
-** metaphactory connects to GraphScope using the user and password specified in the proxy.prop configuration (provided in my-gs-deployment/app-graphscope.zip).
-** Create/Update users and passwords of GraphScope using htpasswd (https://httpd.apache.org/docs/2.4/programs/htpasswd.html) and the users.htpasswd file in the folder my-gs-deployment/gs-config/gs-default-stardog/config/
-
-
-### Update of Deployments
-The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory or blazegraph, but leaving the deployment specific data and configuration assets untouched. 
-
-1. Modify the .env file in the folder of the deployment you want to update and increase/change the docker version tag of the metaphactory or blazegraph container i.e. `METAPHACTORY_IMAGE` and/or `BLAZEGRAPH_IMAGE`.
+1. Modify the .env file in the folder of the deployment you want to update and increase/change the docker version tag of the metaphactory, GraphScope or Blazegraph container i.e. `METAPHACTORY_IMAGE`, `GRAPHSCOPE_IMAGE` and/or `BLAZEGRAPH_IMAGE`.
 2. Run `docker-compose up -d` will re-create only the containers, that have been changed.
 
-### Deletion of Deployments
+## Deletion of Deployments
 Run `docker-compose down` in the folder for deployment you want to purge. Please note, that **all containers and non-external volumes and networks** for the deployment will be removed and deleted. Make sure that you are in the correct folder (where the respective `.env` file for the deployment is located), before executing the down command.
 
 ## Optional Setup: NGINX Proxy Container
