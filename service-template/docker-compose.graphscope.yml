@@ -4,10 +4,11 @@ services:
     container_name: "${COMPOSE_PROJECT_NAME}-graphscope"
     image: "${GRAPHSCOPE}"
     restart: unless-stopped
+    mem_limit: 2g
+    mem_reservation: 2g
     environment:
       JAVA_OPTS: ""
-      XMX: "-Xmx4G"
-      GS_CONFIGFILE: "${GRAPHSCOPE_CONFIGURATION}-config.yml"
+      GS_CONFIGFILE: "config-${GRAPHSCOPE_CONFIGURATION}.yml"
     volumes:
       - ./graphscope-config:/opt/config
       - graphscope-logs:/opt/logs

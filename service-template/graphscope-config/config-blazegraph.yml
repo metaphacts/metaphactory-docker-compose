@@ -1,5 +1,5 @@
 searchhaus:
-  appName: app-default-stardog
+  appName: app-default
   licenseFile: yourlicense.file
   repositoryDirectory: ../repository
   relevanceAssessmentDirectory: ../benchmarks/relevance_assessments
@@ -13,12 +13,11 @@ searchhaus:
     mode: quads
     internalKeyValidation: false
     ## user and password for authentication at the SPARQL endpoint
-    remoteUser: admin
-    remotePassword: admin
-    remoteEndpoint: http://stardog:5820/myDB/query
+    #remoteUser: admin
+    #remotePassword: admin
+    remoteEndpoint: http://blazegraph:8080/blazegraph/sparql
     localEndpoint: http://graphscope:9090/graphscope/api/sparql
-    disableBlazegraphOptimizer: "false"
-
+    storeStrategy: blazegraph
 
   dataSearch:
     analysis: translation-index-analysis-english.json
@@ -28,6 +27,11 @@ searchhaus:
     enableMultiConceptQueries: true
 
     priors:
+      ## blazegraph only, use frequency without -bg suffix otherwise
+      #- type: frequency-bg
+      #  predicates: true
+      ## blazegraph only, use pagerank without -bg suffix otherwise
+      - type: pagerank-bg
       - type: configuration
         predicateWeights:
           http://www.w3.org/2004/02/skos/core#prefLabel: 2.0
@@ -52,7 +56,6 @@ searchhaus:
       #    http://www.wikidata.org/entity/Q12418: 10
       #    # Bob
       #    http://example.org/bob#me : 5
-
 
     queryTranslation:
       timeLimit: 5000
@@ -149,7 +152,6 @@ searchhaus:
       - http://www.w3.org/2002/07/owl#AnnotationProperty
       - http://www.w3.org/2002/07/owl#InverseFunctionalProperty
       - http://www.w3.org/2002/07/owl#TransitiveProperty
-
 
 #    concepts:
 #          # Concepts are identified by their URI.

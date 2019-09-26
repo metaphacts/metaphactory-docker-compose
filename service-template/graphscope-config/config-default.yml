@@ -17,7 +17,7 @@ searchhaus:
     remotePassword: admin
     remoteEndpoint: http://metaphactory:8080/sparql?repository=graphscope-ephedra
     localEndpoint: http://graphscope:9090/graphscope/api/sparql
-    disableBlazegraphOptimizer: "false"
+    storeStrategy: ephedra
 
 
   dataSearch:

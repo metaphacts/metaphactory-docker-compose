@@ -1,8 +1,13 @@
 version: "2.2"
 services:
   metaphactory:
-    #metaphactory-overwites here
+    # metaphactory overwrites here
     ports:
       - "10214:8080"
-    #environment:
-    #  - JAVA_OPTS=-Xmx1g
+    #mem_limit: 1g
+    #mem_reservation: 1g
+  graphscope:
+    # graphscope overwrites here
+    #mem_limit: 2g
+    #mem_reservation: 2g
+
