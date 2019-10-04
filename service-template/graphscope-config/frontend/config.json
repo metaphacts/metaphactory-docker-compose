@@ -43,17 +43,7 @@
   	{
       "heading": "Example 1:",
       "text": "find subgraphs for keyword1 keyword2 keyword3",
-      "keywords": "keyword1 keyword2 keyword3"
-    },
-    {
-      "heading": "Example 2:",
-      "text": "find subgraphs for keyword1 keyword2 keyword3",
-      "keywords": "keyword1 keyword2 keyword3"
-    },
-    {
-      "heading": "Example 3:",
-      "text": "find subgraphs for keyword1 keyword2 keyword3",
-      "keywords": "keyword1 keyword2 keyword3"
+      "keywords": "Enter your search keywords here"
     }
   ],
   "apiConfig": {

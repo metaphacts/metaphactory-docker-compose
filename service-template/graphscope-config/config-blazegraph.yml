@@ -1,5 +1,5 @@
 searchhaus:
-  appName: app-default
+  appName: app-blazegraph-default
   licenseFile: yourlicense.file
   repositoryDirectory: ../repository
   relevanceAssessmentDirectory: ../benchmarks/relevance_assessments
@@ -13,8 +13,8 @@ searchhaus:
     mode: quads
     internalKeyValidation: false
     ## user and password for authentication at the SPARQL endpoint
-    #remoteUser: admin
-    #remotePassword: admin
+    #remoteUser: ${REMOTE_USER:-admin}
+    #remotePassword: ${REMOTE_PWD:-admin}
     remoteEndpoint: http://blazegraph:8080/blazegraph/sparql
     localEndpoint: http://graphscope:9090/graphscope/api/sparql
     storeStrategy: blazegraph
@@ -22,9 +22,7 @@ searchhaus:
   dataSearch:
     analysis: translation-index-analysis-english.json
     showSPARQL: true
-    showValuesOfAttributeValueMatches: true
     highlightAttributeValueMatches: true
-    enableMultiConceptQueries: true
 
     priors:
       ## blazegraph only, use frequency without -bg suffix otherwise
@@ -60,11 +58,9 @@ searchhaus:
     queryTranslation:
       timeLimit: 5000
       validityCheckTimeLimit: 5000
-      enableDirectSubgraphGeneration: false
       maxSubgraphSize: 4
       maxTranslations: 1
-      alternativeMatchesFromTranslations: false
-      subgraphLimit: 5
+      subgraphLimit: 100
 
       matching:
         conceptMatchWeight: 1.0

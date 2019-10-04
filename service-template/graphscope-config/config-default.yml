@@ -13,8 +13,8 @@ searchhaus:
     mode: quads
     internalKeyValidation: false
     ## user and password for authentication at the SPARQL endpoint
-    remoteUser: admin
-    remotePassword: admin
+    remoteUser: ${REMOTE_USER:-admin}
+    remotePassword: ${REMOTE_PWD:-admin}
     remoteEndpoint: http://metaphactory:8080/sparql?repository=graphscope-ephedra
     localEndpoint: http://graphscope:9090/graphscope/api/sparql
     storeStrategy: ephedra
@@ -23,9 +23,7 @@ searchhaus:
   dataSearch:
     analysis: translation-index-analysis-english.json
     showSPARQL: true
-    showValuesOfAttributeValueMatches: true
     highlightAttributeValueMatches: true
-    enableMultiConceptQueries: true
 
     priors:
       - type: configuration
@@ -57,11 +55,9 @@ searchhaus:
     queryTranslation:
       timeLimit: 5000
       validityCheckTimeLimit: 5000
-      enableDirectSubgraphGeneration: false
       maxSubgraphSize: 4
       maxTranslations: 1
-      alternativeMatchesFromTranslations: false
-      subgraphLimit: 5
+      subgraphLimit: 100
 
       matching:
         conceptMatchWeight: 1.0
