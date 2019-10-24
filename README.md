@@ -2,7 +2,7 @@
 
 **Prerequisites:**
 
-* docker installed (version >= 1.9 , check with `docker --version`)
+* docker installed (version >= 17.x , check with `docker --version`)
 * docker-compose installed (version >= 1.14, check with `docker-compose --version`)
 * outgoing HTTP/HTTPS traffic, allowing to access external docker registries (e.g. docker public or other private/corporate docker registries)
 
