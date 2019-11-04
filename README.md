@@ -22,7 +22,7 @@ To create a new deployment from scratch chose from these two options:
 2. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The idea is to maintain one subfolder for every deployment.
 3. Change into the newly created folder `my-deployment` and choose one option below:
 	1. To deploy **metaphactory with Blazegraph** included (recommended for initial tests) run `cp ./database-config/.env_blazegraph .env`.
-	2. To deploy **metaphactory standalone** to connect to an external SPARQL endpoint later on run `cp ./database-config/.env_default .env`. If you want to connect to a SPARQL endpoint accessible only via localhost, please see the instructions in the section **Accessing localhost from docker container** below.
+	2. To deploy **metaphactory standalone** to connect to an external SPARQL endpoint later on run `cp ./database-config/.env_default .env`. If you want to connect to a SPARQL endpoint accessible only via the docker hostmachine, please see the instructions in the section **Accessing docker hostmachine from docker container** below.
 	3. To deploy **metaphactory with Stardog** included run `cp ./database-config/.env_stardog .env`. **Please note:** this requires that you own a valid Stardog license file.
 4. Open the file `.env` e.g. `vi .env` and perform following changes:
 	1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
@@ -43,9 +43,9 @@ To create a new deployment from scratch chose from these two options:
 
 Please run `docker-compose down` before running `docker-compose up` after failed attempts (for example due to missing license file), especially if you experience errors like `unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type`.
 
-**Accessing localhost from docker container**
+**Accessing docker hostmachine from docker container**
 
-* **Linux** If you want to connect to a SPARQL endpoint accessible only via localhost, e.g. http://localhost:5828/myDB/query, please identify the IP of your docker0 network using the following command `ip -4 addr show scope global dev docker0 | grep inet | awk '{print $2}' | cut -d "/" -f 1`. In the file `my-deployment/docker-compose.overwrite.yml` uncomment the line `extra_hosts` and the line below and put the IP of your docker0 network behind 'hostmachine:', e.g. - hostmachine:172.17.0.1. Now, the SPARQL endpoint is accessible via http://hostmachine:<port>/<path>, for example http://hostmachine:5820/myDB/query. Use this URL in your repository setup.
+* **Linux** If you want to connect to a SPARQL endpoint accessible only on the docker hostmachine, e.g. http://localhost:5828/myDB/query, please identify the IP of your docker0 network using the following command `ip -4 addr show scope global dev docker0 | grep inet | awk '{print $2}' | cut -d "/" -f 1`. In the file `my-deployment/docker-compose.overwrite.yml` uncomment the line `extra_hosts` and the line below and put the IP of your docker0 network behind 'hostmachine:', e.g. - hostmachine:172.17.0.1. Now, the SPARQL endpoint is accessible via http://hostmachine:<port>/<path>, for example http://hostmachine:5820/myDB/query. Use this URL in your repository setup.
 * **Mac/Windows** (for development purpose only) The host is accessible via the preconfigured hostname `host.docker.internal` from docker version 18.03 onwards.
 
 ## Change users/password of GraphScope
