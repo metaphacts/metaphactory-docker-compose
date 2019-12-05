@@ -46,19 +46,16 @@ Please run `docker-compose down` before running `docker-compose up` after failed
 **Accessing docker hostmachine from docker container**
 
 * **Linux** If you want to connect to a SPARQL endpoint accessible only on the docker hostmachine, e.g. http://localhost:5828/myDB/query, please identify the IP of your docker0 network using the following command `ip -4 addr show scope global dev docker0 | grep inet | awk '{print $2}' | cut -d "/" -f 1`. In the file `my-deployment/docker-compose.overwrite.yml` uncomment the line `extra_hosts` and the line below and put the IP of your docker0 network behind 'hostmachine:', e.g. - hostmachine:172.17.0.1. Now, the SPARQL endpoint is accessible via http://hostmachine:<port>/<path>, for example http://hostmachine:5820/myDB/query. Use this URL in your repository setup.
-* **Mac/Windows** (for development purpose only) The host is accessible via the preconfigured hostname `host.docker.internal` from docker version 18.03 onwards.
+* **Mac/Windows** (for development purposes only) The host is accessible using the pre-configured hostname `host.docker.internal` from docker version 18.03 onwards.
 
 ## Change users/password of GraphScope
-* The `GraphScope service user` can be created or updated using htpasswd (`https://httpd.apache.org/docs/2.4/programs/htpasswd.html`) and is stored in the `users.htpasswd` file in the folder `graphscope-config`
-#### For GRAPHSCOPE_CONFIGURATION=default (see in .env file)
-* **metaphactory to GraphScope** connection is with the user and password provided in the `proxy.prop` configuration (provided in `graphscope-apps/app-graphscope-default/config`).
-* **GraphScope to graphscope-ephedra repository of metaphactory** using the user and password provided in `graphscope-config/default-config.yml` through the parameters `remoteUser` and `remotePassword`. The provided user needs `sparql:graphscope-ephedra:query:*` and `proxy:graphscope` permissions in metaphactory.
-#### For GRAPHSCOPE_CONFIGURATION=blazegraph (see in .env file)
-* **metaphactory to GraphScope** connection is with the user and password provided in the `proxy.prop` configuration (provided in `graphscope-apps/app-graphscope-blazegraph/config`).
-* **GraphScope to Blazegraph** using the user and password provided in `graphscope-config/blazegraph-config.yml` through the parameters `remoteUser: <user-name>` and `remotePassword: <password>`. 
-#### For GRAPHSCOPE_CONFIGURATION=stardog (see in .env file)
-* **metaphactory to GraphScope** connection is with the user and password provided in the `proxy.prop` configuration (provided in `graphscope-apps/app-graphscope-stardog/config`).
-* **GraphScope to Stardog** using the user and password provided in `graphscope-config/stardog-config.yml` through the parameters `remoteUser: <user-name>` and `remotePassword: <password>`, as well as `remoteEndpoint` to specify the Stardog SPARQL endpoint and utilized database name.
+
+* The `GraphScope service user` can be created or updated using htpasswd (`https://httpd.apache.org/docs/2.4/programs/htpasswd.html`) and is stored in the `users.htpasswd` file in the folder `graphscope-config`. For further details see https://help.metaphacts.com/resource/Help:GraphScopeSetup.
+* Communication between metaphactory and GraphScope is authenticated using the credentials provided in the `proxy.prop` configuration of the respective GRAPHSCOPE_CONFIGURATION (see in .env file), e.g. `graphscope-apps/app-graphscope-default/config`for the default configuration. The defined credentials must match the registered `GraphScope service user` (see above). Note that the credentials can optionally be externalized using the keys `proxy.graphscope.loginName` and `proxy.graphscope.loginPassword`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
+* If authentication is required from the GraphScope backend to the remote SPARQL endpoint (e.g. for blazegraph, stardog or the ephedra endpoint in metaphactory) the credentials can be provided in `docker-compose.overwrite.yml` for the `graphscope` service using the environment parameters `REMOTE_USER` and `REMOTE_PWD`. 
+	* The actual reference values can also be found in the respective GraphScope configuration file (e.g. `graphscope-config/config-blazegrap.yml`) in the parameters `remoteUser: <user-name>` and `remotePassword: <password>`. 
+	* (For `default` only) The metaphactory service user  requires `sparql:graphscope-ephedra:query:*` and the `proxy:graphscope` permissions
+
 
 ## Update of Deployments
 The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory, GraphScope or blazegraph, but leaving the deployment specific data and configuration assets untouched. 
