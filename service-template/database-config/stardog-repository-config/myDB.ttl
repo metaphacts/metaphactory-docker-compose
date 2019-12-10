@@ -1,17 +1,17 @@
-@prefix rep: <http://www.openrdf.org/config/repository#> .
-@prefix sail: <http://www.openrdf.org/config/sail#> .
-@prefix sr: <http://www.openrdf.org/config/repository/sail#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mph: <http://www.metaphacts.com/ontologies/platform/repository#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rep: <http://www.openrdf.org/config/repository#> .
+@prefix sparqlr: <http://www.openrdf.org/config/repository/sparql#> .
+@prefix stardog: <http://www.metaphacts.com/ontologies/platform/repository/stardog#> .
 
-[] a rep:Repository ;
-        rep:repositoryID "default" ;
-        rdfs:label "SPARQL repository with basic authentication" ;
-        rep:repositoryImpl _:node1c17gvqn7x28 .
-
-_:node1c17gvqn7x28 rep:repositoryType "metaphactory:SPARQLBasicAuthRepository" ;
-        <http://www.openrdf.org/config/repository/sparql#query-endpoint> <http://stardog:5820/myDB/query> ;
-        <http://www.openrdf.org/config/repository/sparql#update-endpoint> <http://stardog:5820/myDB/update> ;
-        mph:quadMode true ;
-        mph:username "admin" ;
-        mph:password "admin" .
+[] a rep:Repository;
+  rep:repositoryID "default";
+  rep:repositoryImpl [
+      rep:repositoryType "metaphacts:StardogRepository";
+      mph:username "${repository.default.username:admin}";
+      mph:password "${repository.default.password:admin}";
+      mph:quadMode true;
+      sparqlr:query-endpoint <http://stardog:5820/myDB/query>;
+      sparqlr:update-endpoint <http://stardog:5820/myDB/update>
+    ];
+  rdfs:label "Stardog SPARQL repository with basic authentication" .
