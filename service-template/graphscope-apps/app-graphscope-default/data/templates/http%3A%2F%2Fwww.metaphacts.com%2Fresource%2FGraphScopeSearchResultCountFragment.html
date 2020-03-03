@@ -1,9 +1,0 @@
-<!-- fragment for displaying the count / limit panel -->
-<semantic-context repository="graphscope-ephedra">
-<semantic-search-result>
-	<mp-sparql-result-counts id="result-counts"
-		query="SELECT DISTINCT * {}"
-		template='{{#if hasLimit}} <bs-alert bs-style="warning"> Showing <span class="num-results">{{numberOfResults}}</span> of {{totalNumberOfResults}} matches. <strong>Please, refine your search.</strong> </bs-alert> {{else}} <!-- <span>found <span class="num-results">{{numberOfResults}}</span> matches</span>  --> {{/if}}'>
-	</mp-sparql-result-counts>
-</semantic-search-result>
-</semantic-context>
