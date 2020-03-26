@@ -17,7 +17,7 @@ searchhaus:
     remotePassword: ${REMOTE_PWD:-admin}
     remoteEndpoint: http://stardog:5820/myDB/query
     localEndpoint: http://graphscope:9090/graphscope/api/sparql
-    storeStrategy: default
+    storeStrategy: stardog
 
 
   dataSearch:
