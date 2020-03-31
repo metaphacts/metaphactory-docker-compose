@@ -112,8 +112,15 @@ Go into folder `docker-compose/nginx`
 		Creating nginx-proxy ... done
 
 5. Verify with `docker ps` that a container `nginx-proxy` is running with two ports exposed: ```80, 443```
-6. From now on the `nginx-proxy` will listen to container changes on the docker daemon. As soon as a new docker container instance is started with a environment variable  `-e VIRTUAL_HOST={name}.mydocker.example.com`, nginx will automatically create a vhost entry to proxy incoming HTPP(S) request on `{name}.mydocker.example.com` to the respective container. The environment variable is automatically set when using the metaphactory `docker-compose.yml` as described below. It uses the `COMPOSE_PROJECT_NAME` from the `.env` file as `vhost` name and as such the `vhost` name is equal to the prefix of metaphactory container.
-7. Some final fine-tuning: Enable gzip and increase body size in nginx-proxy. Copy the following configuration into `touch /home/docker/config/nginx/conf.d/proxy.conf`
+6. From now on the `nginx-proxy` will listen to container changes on the docker daemon. As soon as a new docker container instance is started with a environment variable  `-e VIRTUAL_HOST={name}.mydocker.example.com`, nginx will automatically create a vhost entry to proxy incoming HTPP(S) request on `{name}.mydocker.example.com` to the respective container. The environment variable is automatically set when using the metaphactory `docker-compose.yml` as described above. It uses the `COMPOSE_PROJECT_NAME` from the `.env` file as `vhost` name and as such the `vhost` name is equal to the prefix of metaphactory container.
+7. The metaphactory needs to be configured to use the `nginx_proxy_network` as default external network, e.g. by adding the following snippet to the `docker-compose.ovewrite.yml` in the active service instance:
+
+		networks:
+		  default:
+		    external:
+		      name: nginx_proxy_network
+
+8. Some final fine-tuning of configuration: Enable gzip and increase body size in nginx-proxy. Copy the following configuration into `touch /home/docker/config/nginx/conf.d/proxy.conf`
 	
 		client_max_body_size 100m;
 		gzip on;
@@ -121,8 +128,9 @@ Go into folder `docker-compose/nginx`
 		gzip_vary on;
 		gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 		gzip_types application/sparql-results+json;
+		proxy_read_timeout 60s;
 
-	and restart the `nginx-proxy` with `docker restart nginx-proxy` to load the configuration. The body size can be increased as needed e.g. by other front- or backend-containers and depending on the use-cases (nginx's default is usually 2MB for security reasons, whereas the metaphactory platform uses usually 100MB as a default).
+	and restart the `nginx-proxy` with `docker restart nginx-proxy` to load the configuration. The body size can be increased as needed e.g. by other front- or backend-containers and depending on the use-cases (nginx's default is usually 2MB for security reasons, whereas the metaphactory platform uses usually 100MB as a default). The `proxy_read_timeout` setting can be adjusted to configure the HTTP read timeouts, e.g. for long running queries it may be required to increase the timeout.
 
 **Please Note:** 
 
