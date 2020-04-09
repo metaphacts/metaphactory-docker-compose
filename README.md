@@ -10,8 +10,7 @@
 
 **Prerequisites:**
 
-To perform any deployments or updates, you will first need to login to the metaphact's docker registry with your docker hub account, i.e. run `docker login`.
-Please request your account to be added via **support@metaphacts.com** if you have not yet done so.
+Please request your personal token to access our private docker hub registry via https://metaphacts.com/get-started (select "Docker - any graph database").
 
 ### Initial Deployment
 To create a new deployment from scratch chose from these two options:
