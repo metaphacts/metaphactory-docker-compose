@@ -17,7 +17,7 @@ To create a new deployment from scratch chose from these two options:
 
 #### metaphactory Deployment
 
-1. Clone this GIT repository with `git clone https://bitbucket.org/metaphacts/metaphactory-docker-compose.git`
+1. Clone this GIT repository with `git clone https://github.com/metaphacts/metaphactory-docker-compose.git`
 2. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The idea is to maintain one subfolder for every deployment.
 3. Change into the newly created folder `my-deployment` and choose one option below:
 	1. To deploy **metaphactory with Blazegraph** included (recommended for initial tests) run `cp ./database-config/.env_blazegraph .env`.
