@@ -112,7 +112,11 @@ Go into folder `docker-compose/nginx`
 
 5. Verify with `docker ps` that a container `nginx-proxy` is running with two ports exposed: ```80, 443```
 6. From now on the `nginx-proxy` will listen to container changes on the docker daemon. As soon as a new docker container instance is started with a environment variable  `-e VIRTUAL_HOST={name}.mydocker.example.com`, nginx will automatically create a vhost entry to proxy incoming HTPP(S) request on `{name}.mydocker.example.com` to the respective container. The environment variable is automatically set when using the metaphactory `docker-compose.yml` as described above. It uses the `COMPOSE_PROJECT_NAME` from the `.env` file as `vhost` name and as such the `vhost` name is equal to the prefix of metaphactory container.
-7. The metaphactory needs to be configured to use the `nginx_proxy_network` as default external network, e.g. by adding the following snippet to the `docker-compose.ovewrite.yml` in the active service instance:
+7. The metaphactory needs to be configured to use the `nginx_proxy_network` as default external network, e.g. by adding the following snippets to the `docker-compose.ovewrite.yml` in the active service instance:
+
+		metaphactory:
+		  networks:
+		    - default
 
 		networks:
 		  default:
