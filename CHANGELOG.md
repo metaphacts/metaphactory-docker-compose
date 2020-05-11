@@ -9,6 +9,7 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 ## (Unreleased)
 
 - update GIT links to point to the new repository location at GitHub
+- update Blazegraph image to use a newer base image (Jetty 9.4.27 + Java 8u252)
 - improved documentation for the Nginx network setup
 - introduced a changelog for the docker-compose setup
 
