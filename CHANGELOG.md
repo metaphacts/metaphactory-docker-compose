@@ -6,18 +6,21 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
-## UNRELEASED (Release 3.6.0)
+## 2020-09-29 (Release 3.6.0)
+
+The docker tags have been updated to the 3.6.0 release of metaphactory.
 
 - add docker-compose template and instructions for GraphDB
 - add docker-compose instructions on how to expose a https connector
+- updated Blazegraph image to use a newer base image (Jetty 9.4.31 + Java 8u265)
 
 
 ## 2020-07-10 (Release 3.5.0)
 
 The docker tags have been updated to the 3.5.0 release of metaphactory.
 
-- update GIT links to point to the new repository location at GitHub
-- update Blazegraph image to use a newer base image (Jetty 9.4.27 + Java 8u252)
+- updated GIT links to point to the new repository location at GitHub
+- updated Blazegraph image to use a newer base image (Jetty 9.4.27 + Java 8u252)
 - improved documentation for the Nginx network setup
 - introduced a changelog for the docker-compose setup
 
