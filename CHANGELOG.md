@@ -6,6 +6,11 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## UNRELEASED (Release 3.6.0)
+
+- add docker-compose template and instructions for GraphDB
+
+
 ## 2020-07-10 (Release 3.5.0)
 
 The docker tags have been updated to the 3.5.0 release of metaphactory.

@@ -13,36 +13,77 @@
 Please request your personal token to access our private docker hub registry via https://metaphacts.com/get-started (select "Docker - any graph database").
 
 ### Initial Deployment
-To create a new deployment from scratch chose from these two options:
 
-#### metaphactory Deployment
+To create a new deployment, start as follows:
 
 1. Clone this GIT repository with `git clone https://github.com/metaphacts/metaphactory-docker-compose.git`
 2. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The idea is to maintain one subfolder for every deployment.
-3. Change into the newly created folder `my-deployment` and choose one option below:
-	1. To deploy **metaphactory with Blazegraph** included (recommended for initial tests) run `cp ./database-config/.env_blazegraph .env`.
-	2. To deploy **metaphactory standalone** to connect to an external SPARQL endpoint later on run `cp ./database-config/.env_default .env`. If you want to connect to a SPARQL endpoint accessible only via the docker hostmachine, please see the instructions in the section **Accessing docker hostmachine from docker container** below.
-	3. To deploy **metaphactory with Stardog** included run `cp ./database-config/.env_stardog .env`. **Please note:** this requires that you own a valid Stardog license file.
+
+Then, depending on which database backend you want to use, enter the newly created deployment directory, and choose an option:
+
+#### metaphactory with Blazegraph
+
+This is the simplest deployment to choose for local development.
+
+3. Run `cp ./database-config/.env_blazegraph .env`.
 4. Open the file `.env` e.g. `vi .env` and perform following changes:
-	1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`) i.e. the name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-	2. Please note that the deployment will contain GraphScope (`https://www.metaphacts.com/graphscope`), which runs in its own container and requires additional 2GB of memory. Remove `:./docker-compose.graphscope.yml` from the `COMPOSE_FILE` parameter to deactivate GraphScope.
-5. (Only for **metaphactory with Stardog**) Please perform additional steps below to prepare the Stardog configuration:
-	1. Add your Stardog license into the `/database-config/stardog-config` folder by replacing the existing file `stardog-license-key.bin`. 
-	2. You may want to modify Stardog specific parameters in the `/database-config/stardog-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
-	3. You can also modify the `/database-config/stardog-repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with Stardog. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details. Please note that changes to the database name require modification of the database configuration in `/database-config/stardog-config/database-template.properties`.
-	4. Also note that GraphScope has a reference to the database as well, which would need to be updated in `graphscope-config/stardog-config.yml` with the parameter `remoteEndpoint`, in case of changes.
+    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+5. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+6. Open `http://localhost:10214` and login with user `admin` and password `admin`
+
+#### metaphactory standalone 
+
+3. run `cp ./database-config/.env_default .env`
+4. Open the file `.env` e.g. `vi .env` and perform following changes:
+    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+5. If you want to connect to a SPARQL endpoint accessible only via the docker hostmachine, please see the instructions in the section [Accessing docker hostmachine from docker container](#accessing-docker-hostmachine-from-docker-container).
 6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-7. Please perform additional steps below, in case you chose to deploy **metaphactory with Stardog**:
-	1. Run `docker-compose exec stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file). 
+7. Open `http://localhost:10214` and login with user `admin` and password `admin`
+
+#### metaphactory with Stardog
+
+ **Please note:** use of Stardog requires that you own a valid Stardog license file.
+
+3. run `cp ./database-config/.env_stardog .env`.
+4. Open the file `.env` e.g. `vi .env` and perform following changes:
+    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+    2. Please note that the deployment will contain GraphScope (`https://www.metaphacts.com/graphscope`), which runs in its own container and requires additional 2GB of memory. Remove `:./docker-compose.graphscope.yml` from the `COMPOSE_FILE` parameter to deactivate GraphScope.
+5. (Only for **metaphactory with Stardog**) Please perform additional steps below to prepare the Stardog configuration:
+    1. Add your Stardog license into the `/database-config/stardog-config` folder by replacing the existing file `stardog-license-key.bin`. 
+    2. You may want to modify Stardog specific parameters in the `/database-config/stardog-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
+    3. You can also modify the `/database-config/stardog-repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with Stardog. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details. Please note that changes to the database name require modification of the database configuration in `/database-config/stardog-config/database-template.properties`.
+    4. Also note that GraphScope has a reference to the database as well, which would need to be updated in `graphscope-config/stardog-config.yml` with the parameter `remoteEndpoint`, in case of changes.
+
+6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+7. Run `docker-compose exec stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file). 
+
+**Please note:** For the creation of the stardog database the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
+
 8. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
-**Please note:** For the creation of the stardog database (if chosen above) the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
+#### metaphactory with GraphDB
 
-**Troubleshooting**
+**Please note:** use of GraphDB requires that you own a valid GraphDB license file.
+
+3. run `cp ./database-config/.env_graphdb .env`. 
+4. Open the file `.env` e.g. `vi .env` and perform following changes:
+    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+    2. Please note that the deployment will contain GraphScope (`https://www.metaphacts.com/graphscope`), which runs in its own container and requires additional 2GB of memory. Remove `:./docker-compose.graphscope.yml` from the `COMPOSE_FILE` parameter to deactivate GraphScope.
+
+5. Please perform additional steps below to prepare the GraphDB configuration:
+    1. Add your GraphDB license file into the `/database-config/graphdb-config/license` folder by replacing the existing file `graphdb.license`. 
+    2. (Optional) modify GraphDB-specific parameters in the `/database-config/docker-compose.graphdb.yml` file, for example changing the default memory settings, or modifying the location where GraphDB stores its data on the host machine (by default, in the directory `graphdb-data` in the deployment directory). 
+    3. (Optional) modify the configuration of the default GraphDB database, which is automatically created on first boot. You can do so by editing `/database-config/graphdb-config/graphdb-repository-config.ttl`.
+    4. (Optional) you can also modify the `/database-config/graphdb-config/metaphactory.ttl` file, i.e. to use a different GraphDB database name or changing the default credentials for the repository connection with GraphDB. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
+
+6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+7. Open `http://localhost:10214` and login with user `admin` and password `admin`
+
+## Troubleshooting
 
 Please run `docker-compose down` before running `docker-compose up` after failed attempts (for example due to missing license file), especially if you experience errors like `unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type`.
 
-**Accessing docker hostmachine from docker container**
+## Accessing docker hostmachine from docker container
 
 * **Linux** If you want to connect to a SPARQL endpoint accessible only on the docker hostmachine, e.g. http://localhost:5828/myDB/query, please identify the IP of your docker0 network using the following command `ip -4 addr show scope global dev docker0 | grep inet | awk '{print $2}' | cut -d "/" -f 1`. In the file `my-deployment/docker-compose.overwrite.yml` uncomment the line `extra_hosts` and the line below and put the IP of your docker0 network behind 'hostmachine:', e.g. - hostmachine:172.17.0.1. Now, the SPARQL endpoint is accessible via http://hostmachine:<port>/<path>, for example http://hostmachine:5820/myDB/query. Use this URL in your repository setup.
 * **Mac/Windows** (for development purposes only) The host is accessible using the pre-configured hostname `host.docker.internal` from docker version 18.03 onwards.
@@ -52,8 +93,8 @@ Please run `docker-compose down` before running `docker-compose up` after failed
 * The `GraphScope service user` can be created or updated using htpasswd (`https://httpd.apache.org/docs/2.4/programs/htpasswd.html`) and is stored in the `users.htpasswd` file in the folder `graphscope-config`. For further details see https://help.metaphacts.com/resource/Help:GraphScopeSetup.
 * Communication between metaphactory and GraphScope is authenticated using the credentials provided in the `proxy.prop` configuration of the respective GRAPHSCOPE_CONFIGURATION (see in .env file), e.g. `graphscope-apps/app-graphscope-default/config` for the default configuration. The defined credentials must match the registered `GraphScope service user` (see above). Note that the credentials can optionally be externalized using the keys `proxy.graphscope.loginName` and `proxy.graphscope.loginPassword`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
 * If authentication is required from the GraphScope backend to the remote SPARQL endpoint (e.g. for blazegraph, stardog or the ephedra endpoint in metaphactory) the credentials can be provided in `docker-compose.overwrite.yml` for the `graphscope` service using the environment parameters `REMOTE_USER` and `REMOTE_PWD`. 
-	* The actual reference values can also be found in the respective GraphScope configuration file (e.g. `graphscope-config/config-blazegrap.yml`) in the parameters `remoteUser: <user-name>` and `remotePassword: <password>`. 
-	* (For `default` only) The metaphactory service user requires `sparql:graphscope-ephedra:query:*` and the `proxy:graphscope` permissions
+    * The actual reference values can also be found in the respective GraphScope configuration file (e.g. `graphscope-config/config-blazegrap.yml`) in the parameters `remoteUser: <user-name>` and `remotePassword: <password>`. 
+    * (For `default` only) The metaphactory service user requires `sparql:graphscope-ephedra:query:*` and the `proxy:graphscope` permissions
 
 
 ## Update of Deployments
@@ -74,12 +115,12 @@ Run `docker-compose down` in the folder for deployment you want to purge. Please
 It is recommended to use a proxy container with virtual host mappings to proxy the incoming HTTP traffic to the individual container instances. Reasons are:
 
 * Security
-	* Not every container/deployment should expose a port (neither on localhost nor to the outside network). Firewall needs to open only two ports.
-	* SSL certificate handling in a single place. Instead of dealing with certificates individually or using self-signed certificates, there will be only one officially signed wildcard certificate. One-time installation, valid for all deployments.
+    * Not every container/deployment should expose a port (neither on localhost nor to the outside network). Firewall needs to open only two ports.
+    * SSL certificate handling in a single place. Instead of dealing with certificates individually or using self-signed certificates, there will be only one officially signed wildcard certificate. One-time installation, valid for all deployments.
     * Ability to automatically issue certificates with [Let's Encrypt](https://letsencrypt.org/).
-	* Easy to .htaccess protect containers/deployments that have no built-in authentication mechanism
+    * Easy to .htaccess protect containers/deployments that have no built-in authentication mechanism
 * Dealing with hostnames is much easier than dealing with IPs and Ports
-	* Changes to the underlying (container) setup/infrastructure can be handled transparently.
+    * Changes to the underlying (container) setup/infrastructure can be handled transparently.
 * Single place for special HTTP settings i.e. easy to enable CORS, GZIP, HTTP2 or modifying HTTP header for individual or all deployments.
 	
 **Prerequisites:**

@@ -1,0 +1,27 @@
+version: "2.2"
+services:
+ graphdb:
+  container_name: "${COMPOSE_PROJECT_NAME}-graphdb"
+  image: "${GRAPHDB_IMAGE}"
+  restart: unless-stopped
+  environment:
+    GDB_JAVA_OPTS: >-
+        -Xmx2g -Xms1g
+        -Dgraphdb.workbench.importDirectory=/opt/graphdb/home/graphdb-import
+        -Dgraphdb.license.file=/etc/graphdb-license
+  networks:
+     - metaphactory_network
+  volumes:
+     - graphdb_data:/opt/graphdb/home
+  logging:
+   driver: json-file
+   options:
+    max-size: "200k"
+    max-file: "10"
+
+ metaphactory:
+  depends_on:
+    - graphdb
+
+volumes:
+  graphdb_data:

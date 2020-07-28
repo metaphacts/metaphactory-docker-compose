@@ -1,0 +1,14 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix hr: <http://www.openrdf.org/config/repository/http#>.
+@prefix mph: <http://www.metaphacts.com/ontologies/platform/repository#> .
+
+[] a rep:Repository ;
+   rep:repositoryImpl [
+      rep:repositoryType "metaphactory:GraphDBRepository" ;
+      hr:repositoryURL <http://graphdb:7200/repositories/metaphactory> ;
+      mph:username "${repository.default.username:admin}" ;
+      mph:password "${repository.default.password:root}" 
+   ];
+   rep:repositoryID "default" ;
+   rdfs:label "GraphDB repository" .
