@@ -106,6 +106,28 @@ The most frequent use-case will be updating the runtime (i.e. software) containe
 ## Deletion of Deployments
 Run `docker-compose down` in the folder for deployment you want to purge. Please note, that **all containers and non-external volumes and networks** for the deployment will be removed and deleted. Make sure that you are in the correct folder (where the respective `.env` file for the deployment is located), before executing the down command.
 
+## Optional Setup: Activate HTTPS connector in metaphactory
+
+metaphactory is typically run behind a reverse proxy (e.g. nginx or AWS ALB) which takes care of TLS termination and certificate handling. This is the preferred setup as this moves certificate handling etc. to a centrally managed endpoint and avoids having to configure all aspects of HTTPS/TLS communication within the metaphactory container.
+
+When encrypted access to metaphactory is required, e.g. because the container is directly exposed to other services without a reverse proxy  or for encrypted communication within the service network in some environments, the HTTPS connector can be exposed as well.
+
+The container by default runs a https connector on port `8443` with a self-signed certificate. When encrypted access is desired this port needs to be exposed to any port in the outside world, e.g. `10213`. This can be done by un-commenting the corresponding line in `docker-compose.overwrite.yml`.
+
+It is also possible to expose the http port `8080` to a port other than `10214` and use `10214` for https.
+
+The container-internal ports can also be adjusted by specifying the following properties using environment variable `PLATFORM_JETTY_OPTS`:
+`PLATFORM_JETTY_OPTS="jetty.http.port=8081 jetty.ssl.port=8444"`
+
+Jetty will use a self-signed certificate by default and the keystore is located in `/var/lib/jetty/etc/keystore`. 
+To use a custom certificate this keystore can be replaced, e.g. using a Docker volume (just) for that file, specifying the location  
+and keystore password by adding the following setting to environment variable `PLATFORM_JETTY_OPTS`: 
+`PLATFORM_JETTY_OPTS="jetty.sslContext.keyStorePath=etc/mykeystore jetty.sslContext.keyStorePassword=storepwd"`
+
+Please note that the keystore path is **always** relative to `/var/lib/jetty/` so any externally injected keystore file must be placed there! 
+
+
+
 ## Optional Setup: NGINX Proxy Container
 
 **Please note:**

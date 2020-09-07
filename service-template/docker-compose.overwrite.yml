@@ -4,6 +4,7 @@ services:
     # metaphactory overwrites here
     ports:
       - "10214:8080"
+    #  - "10213:8443"
     #mem_limit: 1g
     #mem_reservation: 1g
     #environment:

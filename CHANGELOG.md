@@ -9,6 +9,7 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 ## UNRELEASED (Release 3.6.0)
 
 - add docker-compose template and instructions for GraphDB
+- add docker-compose instructions on how to expose a https connector
 
 
 ## 2020-07-10 (Release 3.5.0)
