@@ -6,6 +6,18 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## UNRELEASED 
+
+The docker-compose setup for Nginx has been revised (particularly w.r.t security aspects).
+
+Users are encouraged to migrate existing environments. Note that this is a **breaking** change as the folder and compose structure for Nginx has changed. It is easiest to re-setup nginx following the instructions of the [readme](README.md).
+
+- improved nginx docker compose setup with integrated security best practices
+- use latest "named" version of nginx and letsencrypt images
+
+See also [here](nginx/readme.md) for details on the Nginx security configuration.
+
+
 ## 2020-09-29 (Release 3.6.0)
 
 The docker tags have been updated to the 3.6.0 release of metaphactory.

@@ -1,0 +1,13 @@
+version: "2.2"
+services:
+  nginx-proxy-docker-gen:
+    # uncomment to adjust nginx template configuration
+    #environment:
+    #  - SSL_POLICY=Mozilla-Modern
+    #  - REFERRER_POLICY=off
+
+networks:
+  proxy_network:
+# uncomment the two lines below if you run docker-compose for nginx after other containers have already connected to the network
+#    external:
+#     name: nginx_proxy_network

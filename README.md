@@ -152,9 +152,8 @@ It is recommended to use a proxy container with virtual host mappings to proxy t
 * Wildcard SSL certificate for the DNS entry *.mydocker.example.com placed in `/home/docker/config/nginx/certs`. Obviously, it is not required to use HTTPS. However, while the obvious reason for taking this extra step is security, there is another positive side-effect: Performance i.e. only with HTTPS new HTTP2 features are available, which will greatly speed-up the performance of many client-side applications.
 
 ### Setup
-1. Create the initial folder structure for nginx config files i.e. so that one can mount the folder when creating the proxy container and place additional config files later if needed: `mkdir -p /home/docker/config/nginx/{certs,htpasswd,vhost.d,conf.d}` and `touch /home/docker/config/nginx/conf.d/proxy.conf`.
-2. Copy the content of [nginx.tmpl](https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl) to `/home/docker/config/nginx/nginx.tmpl`
-3. Copy SSL certificate to `/home/docker/config/nginx/certs` i.e. the *.key file and *.crt file must be named equivalent to the hostname (e.g. mydocker.example.com.key and mydocker.example.com.crt, if you have a wildcard certificate for *.mydocker.example.com). Set proper permissions to protect the key file (i.e. docker must be able to read it, but no one else). The *.cert file should contain only the certificate body (from `-----BEGIN CERTIFICATE----- ` to `-----END CERTIFICATE----- `) but also all intermediate certificates/root certificate required for the certificate chain. You can simple concatenate these, however, order matters:
+1. Create a copy of the provided `config-template` folder i.e. `cp -r nginx/service-template nginx/config`. The idea is to maintain a deployment specific configuration.
+2. Copy the SSL certificate to `config/certs` i.e. the *.key file and *.crt file must be named equivalent to the hostname (e.g. mydocker.example.com.key and mydocker.example.com.crt, if you have a wildcard certificate for *.mydocker.example.com). Set proper permissions to protect the key file (i.e. docker must be able to read it, but no one else). The *.cert file should contain only the certificate body (from `-----BEGIN CERTIFICATE----- ` to `-----END CERTIFICATE----- `) but also all intermediate certificates/root certificate required for the certificate chain. You can simple concatenate these, however, order matters:
 
 		-----BEGIN CERTIFICATE----- 
 		(Your Primary SSL certificate: your_domain_name.crt) 
@@ -166,8 +165,8 @@ It is recommended to use a proxy container with virtual host mappings to proxy t
 		(Your Root certificate: TrustedRoot.crt) 
 		-----END CERTIFICATE----
 
-3. Go into the `cert` folder i.e. `cd /home/docker/config/nginx/certs` and generate [Diffie–Hellman](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) parameters using `openssl dhparam -dsaparam -out /home/docker/config/nginx/certs/mydocker.example.com.dhparam.pem 4096`. `-dsaparam` [option instructs OpenSSL to produce "DSA-like" DH parameters ](https://wiki.openssl.org/index.php/Manual:Dhparam(1)#OPTIONS) , which is magnitude faster then computing the dhparam 4096 (see explanation [on stackexchange](https://security.stackexchange.com/a/95184))
-Go into folder `docker-compose/nginx`
+3. Go into the `certs` folder i.e. `cd ./nginx/config/certs` and generate [Diffie–Hellman](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) parameters using `openssl dhparam -dsaparam -out mydocker.example.com.dhparam.pem 4096`. `-dsaparam` [option instructs OpenSSL to produce "DSA-like" DH parameters ](https://wiki.openssl.org/index.php/Manual:Dhparam(1)#OPTIONS) , which is magnitude faster then computing the dhparam 4096 (see explanation [on stackexchange](https://security.stackexchange.com/a/95184))
+Go into folder `docker-compose/nginx/config`
 4. Now we are ready to create and start the proxy container. Running `docker-compose up -d` should result in:
 		Creating network "nginx_proxy_network" with the default driver
 		Creating nginx-proxy ...
@@ -186,22 +185,13 @@ Go into folder `docker-compose/nginx`
 		    external:
 		      name: nginx_proxy_network
 
-8. Some final fine-tuning of configuration: Enable gzip and increase body size in nginx-proxy. Copy the following configuration into `touch /home/docker/config/nginx/conf.d/proxy.conf`
-	
-		client_max_body_size 100m;
-		gzip on;
-		gzip_proxied any;
-		gzip_vary on;
-		gzip_disable "MSIE [1-6]\.(?!.*SV1)";
-		gzip_types application/sparql-results+json;
-		proxy_read_timeout 60s;
-
-	and restart the `nginx-proxy` with `docker restart nginx-proxy` to load the configuration. The body size can be increased as needed e.g. by other front- or backend-containers and depending on the use-cases (nginx's default is usually 2MB for security reasons, whereas the metaphactory platform uses usually 100MB as a default). The `proxy_read_timeout` setting can be adjusted to configure the HTTP read timeouts, e.g. for long running queries it may be required to increase the timeout.
+8. Some final fine-tuning of configuration can be done in `nginx/config/conf.d/proxy.conf`. The body size can be increased as needed e.g. by other front- or backend-containers and depending on the use-cases (nginx's default is usually 2MB for security reasons, whereas the metaphactory platform uses usually 100MB as a default). The `proxy_read_timeout` setting can be adjusted to configure the HTTP read timeouts, e.g. for long running queries it may be required to increase the timeout. In order to activate changes restart the `nginx-proxy` with `docker restart nginx-proxy` to load the configuration. 
+9. See also [here](nginx/readme.md) for more details on Nginx Security harderning
 
 **Please Note:** 
 
-* If you do not want to use HTTPS, simple modify the nginx `docker-compose/nginx/docker-compose.yml` file i.e. remove/comment the line where the 443 is exposed and where the path to the `/home/docker/config/nginx/certs` folder is mounted as volume. The volumes section is also the place to be modified, in case you want to use a different location to place your configuration files including specific vhost configs or certificates. For details, please refer to the official [jwilder/nginx-proxy documentation](https://github.com/jwilder/nginx-proxy).<br><br>
+* If you do not want to use HTTPS, make sure to not have any SSL certificates in the `certs` folder. The volumes section of the `docker-compose` files is also the place to be modified, in case you want to use a different location to place your configuration files including specific vhost configs or certificates. For details, please refer to the official [jwilder/nginx-proxy documentation](https://github.com/jwilder/nginx-proxy).<br><br>
 * If you do not want to or are not able to use the nginx proxy at all (for example, you do not have a DNS entry for your host), you can still use the `docker-compose/metaphactory-blazegraph/docker-compose.yml` script to maintain your deployments.  However, you will need to map/expose the metaphactory docker container port `8080` to a free host port (you basically need one port / deployment). Simply uncomment and modify the port section in the `docker-compose.yml` file and parameterize the exposed port for every deployment trough a environment variable from your .env files.
 
 ### Optional: Setup with Let's Encrypt
-For Let's Encrypt the system should be accessible from the outside world. Otherwise the setup is exactly the same as for default nginx, but one need to use docker-compose file from the `docker-compose/nginx-letsencrypt`.
+For Let's Encrypt the system should be accessible from the outside world. Otherwise the setup is exactly the same as for default nginx. In order to activate Let's Encrypt uncomment the respective line in the `nginx/config/.env` file (see file comments for details).

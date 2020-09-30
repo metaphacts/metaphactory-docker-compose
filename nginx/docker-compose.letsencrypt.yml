@@ -2,14 +2,14 @@ version: "2.2"
 services:
   nginx-proxy-letsencrypt:
     container_name: nginx-proxy-letsencrypt
-    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    image: "${LETSENCRYPT_COMPANION_IMAGE}"
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /home/docker/config/nginx/conf.d:/etc/nginx/conf.d:rw
-      - /home/docker/config/nginx/vhost.d:/etc/nginx/vhost.d:rw
-      - /home/docker/config/nginx/html:/usr/share/nginx/html:rw
-      - /home/docker/config/nginx/certs:/etc/nginx/certs:rw
+      - ./conf.d:/etc/nginx/conf.d:rw
+      - ./vhost.d:/etc/nginx/vhost.d:rw
+      - ./html:/usr/share/nginx/html:rw
+      - ./certs:/etc/nginx/certs:rw
     networks:
       - proxy_network
     environment:
