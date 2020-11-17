@@ -14,6 +14,8 @@ Please request your personal token to access our private docker hub registry via
 
 ### Initial Deployment
 
+The following instructions are tested and validated on Linux and macOS. If running on Windows, please use the PowerShell UI for maximum compatibility.
+
 To create a new deployment, start as follows:
 
 1. Clone this GIT repository with `git clone https://github.com/metaphacts/metaphactory-docker-compose.git`
