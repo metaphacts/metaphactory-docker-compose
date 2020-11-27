@@ -4,6 +4,7 @@
 # in accordance with the GraphDB documentation before first starting up the docker 
 # containers.
 #
+# See https://graphdb.ontotext.com/documentation/enterprise/configuring-a-repository.html
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix rep: <http://www.openrdf.org/config/repository#>.
 @prefix sr: <http://www.openrdf.org/config/repository/sail#>.

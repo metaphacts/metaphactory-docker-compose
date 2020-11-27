@@ -17,6 +17,11 @@ Users are encouraged to migrate existing environments. Note that this is a **bre
 
 See also [here](nginx/readme.md) for details on the Nginx security configuration.
 
+Other changes:
+
+- GraphDB version in docker-compose template updated to 9.4.1
+- GraphDB example repository configuration for enabling SHACL validation
+
 
 ## 2020-09-29 (Release 3.6.0)
 
