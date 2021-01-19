@@ -21,6 +21,8 @@ Other changes:
 
 - GraphDB version in docker-compose template updated to 9.4.1
 - GraphDB example repository configuration for enabling SHACL validation
+- update Blazegraph image to use a newer base image (Jetty 9.4.35 + Java 8u275)
+
 
 
 ## 2020-09-29 (Release 3.6.0)
