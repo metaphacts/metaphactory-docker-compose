@@ -33,7 +33,7 @@ This is the simplest deployment to choose for local development.
 5. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 6. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
-#### metaphactory standalone 
+#### metaphactory only - for use with existing graph databases
 
 3. run `cp ./database-config/.env_default .env`
 4. Open the file `.env` e.g. `vi .env` and perform following changes:
