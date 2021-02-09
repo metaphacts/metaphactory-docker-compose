@@ -9,6 +9,7 @@ services:
         -Xmx2g -Xms1g
         -Dgraphdb.workbench.importDirectory=/opt/graphdb/home/graphdb-import
         -Dgraphdb.license.file=/etc/graphdb-license
+        -Dorg.eclipse.rdf4j.rio.encode_rdf_star=false
   networks:
      - metaphactory_network
   volumes:
