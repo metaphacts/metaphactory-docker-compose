@@ -6,7 +6,9 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
-## UNRELEASED 
+## 2021-02-15 (Release 4.0.0)
+
+The docker tags have been updated to the 4.0.0 release of metaphactory.
 
 The docker-compose setup for Nginx has been revised (particularly w.r.t security aspects).
 
@@ -19,7 +21,7 @@ See also [here](nginx/readme.md) for details on the Nginx security configuration
 
 Other changes:
 
-- GraphDB version in docker-compose template updated to 9.4.1
+- GraphDB version in docker-compose template updated to 9.5.0
 - GraphDB example repository configuration for enabling SHACL validation
 - update Blazegraph image to use a newer base image (Jetty 9.4.35 + Java 8u275)
 
