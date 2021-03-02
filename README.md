@@ -63,6 +63,8 @@ This is the simplest deployment to choose for local development.
 
 8. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
+**Note:** we are running the Stardog container as `root` user to avoid restricted volume permissions in certain Stardog images (incl. 7.4.5 and 7.5.0), c.f. `database-config/docker-compose.stardog.yml`. 
+
 #### metaphactory with GraphDB
 
 **Please note:** use of GraphDB requires that you own a valid GraphDB license file.

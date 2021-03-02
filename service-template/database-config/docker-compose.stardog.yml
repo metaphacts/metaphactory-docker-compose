@@ -1,6 +1,8 @@
 version: "2.2"
 services:
   stardog:
+    # run as root user to avoid restricted volume permissions in certain Stardog images (incl. 7.4.5 and 7.5.)
+    user: "root"
     #stardog-overwrites here
     volumes:
      - ./database-config/stardog-config/stardog-license-key.bin:/var/opt/stardog/stardog-license-key.bin
