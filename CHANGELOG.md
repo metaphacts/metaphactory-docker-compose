@@ -6,6 +6,11 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## 2021-03-16
+
+- Robustness for GraphDB compose setup w.r.t. configuration container
+
+
 ## 2021-03-02
 
 - Fix Stardog compose setup to execute as "root" user for proper volume permissions

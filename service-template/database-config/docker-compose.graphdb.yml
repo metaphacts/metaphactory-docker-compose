@@ -22,22 +22,27 @@ services:
   # Remove or comment out if you do not want this automatic setup to happen.
   graphdb-config:
     container_name: "${COMPOSE_PROJECT_NAME}-graphdb-config"
-    image: "alpine:3.12"
+    image: "${METAPHACTORY_IMAGE}"
     volumes:
       - ./database-config/graphdb-config/:/config
     depends_on:
       - graphdb
     networks:
       - metaphactory_network
+    entrypoint: /bin/bash
     command: >
-        /bin/sh -c "
-            while ! nc -z graphdb 7200;
+        -c "
+            while ! curl -sSf http://graphdb:7200/rest/repositories > /dev/null;
             do 
                 echo \"Waiting for GraphDB...\";
                 sleep 1;
             done;
             echo \"GraphDB started\";
-            /config/configure.sh;
+            curl -X POST\
+              http://graphdb:7200/rest/repositories\
+              -H 'Content-Type: multipart/form-data'\
+              -F "config=@/config/graphdb-repository-config.ttl";
+            echo \"Repository configuration applied in GraphDB\";
         "
 
   metaphactory:
