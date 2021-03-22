@@ -6,6 +6,14 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## unreleased (Release 4.1.0)
+
+
+Other changes:
+
+- make `/storage` in metaphactory image a persistent Docker volume
+
+
 ## 2021-03-16
 
 - Robustness for GraphDB compose setup w.r.t. configuration container
