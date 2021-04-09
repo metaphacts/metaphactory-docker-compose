@@ -118,18 +118,31 @@ When encrypted access to metaphactory is required, e.g. because the container is
 
 The container by default runs a https connector on port `8443` with a self-signed certificate. When encrypted access is desired this port needs to be exposed to any port in the outside world, e.g. `10213`. This can be done by un-commenting the corresponding line in `docker-compose.overwrite.yml`.
 
-It is also possible to expose the http port `8080` to a port other than `10214` and use `10214` for https.
 
-The container-internal ports can also be adjusted by specifying the following properties using environment variable `PLATFORM_JETTY_OPTS`:
-`PLATFORM_JETTY_OPTS="jetty.http.port=8081 jetty.ssl.port=8444"`
+In case required by the environment: the container-internal ports can also be adjusted by specifying the following properties using environment variable `PLATFORM_JETTY_OPTS`: `PLATFORM_JETTY_OPTS=jetty.http.port=8081 jetty.ssl.port=8444`
 
 Jetty will use a self-signed certificate by default and the keystore is located in `/var/lib/jetty/etc/keystore`. 
-To use a custom certificate this keystore can be replaced, e.g. using a Docker volume (just) for that file, specifying the location  
-and keystore password by adding the following setting to environment variable `PLATFORM_JETTY_OPTS`: 
-`PLATFORM_JETTY_OPTS="jetty.sslContext.keyStorePath=etc/mykeystore jetty.sslContext.keyStorePassword=storepwd"`
+To use a custom certificate this keystore can be replaced, e.g. using a Docker volume (just) for that file, specifying the location and keystore password by adding the following settings to the environment variable `PLATFORM_JETTY_OPTS` (e.g. in the `.env` file).
+    
+The following example provides a snippet for the keystore `mykeystore.jks` with password `changeit`. This can be used in `docker-compose.overwrite.yml`.
 
-Please note that the keystore path is **always** relative to `/var/lib/jetty/` so any externally injected keystore file must be placed there! 
 
+		services:
+		  metaphactory:
+		    # metaphactory overwrites here
+		    #...
+		    volumes:
+		      - ./mykeystore.jks:/var/lib/jetty/etc/mykeystore.jks
+		    environment:
+		      - PLATFORM_JETTY_OPTS=jetty.sslContext.keyStorePath=etc/mykeystore.jks jetty.sslContext.keyStorePassword=changeit jetty.sslContext.keyManagerPassword=changeit
+
+**Notes:**
+
+* The keystore path is **always** relative to `/var/lib/jetty/`, so any externally injected keystore file must be placed there!
+* The keystore must be in JKS format. It is recommended to place a single certificate into the keystore, and assign the alias `jetty`
+* For managing keystores the JDK provided keytool, or visual tools (such as the [Keystore Explorer](https://keystore-explorer.org/)) can be used
+* The environment setting `PLATFORM_JETTY_OPTS` must not use quotes
+* The default password for the Jetty provided `keystore` is `storepwd`
 
 
 ## Optional Setup: NGINX Proxy Container

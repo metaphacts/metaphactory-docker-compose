@@ -12,6 +12,7 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 Other changes:
 
 - make `/storage` in metaphactory image a persistent Docker volume
+- improve documentation for using a custom keystore
 
 
 ## 2021-03-16
