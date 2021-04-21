@@ -92,6 +92,10 @@ Please run `docker-compose down` before running `docker-compose up` after failed
 * **Linux** If you want to connect to a SPARQL endpoint accessible only on the docker hostmachine, e.g. http://localhost:5828/myDB/query, please identify the IP of your docker0 network using the following command `ip -4 addr show scope global dev docker0 | grep inet | awk '{print $2}' | cut -d "/" -f 1`. In the file `my-deployment/docker-compose.overwrite.yml` uncomment the line `extra_hosts` and the line below and put the IP of your docker0 network behind 'hostmachine:', e.g. - hostmachine:172.17.0.1. Now, the SPARQL endpoint is accessible via http://hostmachine:<port>/<path>, for example http://hostmachine:5820/myDB/query. Use this URL in your repository setup.
 * **Mac/Windows** (for development purposes only) The host is accessible using the pre-configured hostname `host.docker.internal` from docker version 18.03 onwards.
 
+## Activating GraphScope
+
+GraphScope can be activated as additional service in the docker-compose setup by adding `:./docker-compose.graphscope.yml` as additional configuration include to the `COMPOSE_FILE` definition in the `.env` file (prior to the `:./docker-compose.overwrite.yml` entry).
+
 ## Change users/password of GraphScope
 
 * The `GraphScope service user` can be created or updated using htpasswd (`https://httpd.apache.org/docs/2.4/programs/htpasswd.html`) and is stored in the `users.htpasswd` file in the folder `graphscope-config`. For further details see https://help.metaphacts.com/resource/Help:GraphScopeSetup.

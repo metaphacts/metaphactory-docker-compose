@@ -12,6 +12,7 @@ The docker tags have been updated to the 4.1.0 release of metaphactory.
 
 Other changes:
 
+- make GraphScope an optional service to start on-demand only
 - make `/storage` in metaphactory image a persistent Docker volume
 - improve documentation for using a custom keystore
 
