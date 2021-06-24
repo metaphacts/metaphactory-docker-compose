@@ -10,6 +10,7 @@ services:
       - ./vhost.d:/etc/nginx/vhost.d:rw
       - ./html:/usr/share/nginx/html:rw
       - ./certs:/etc/nginx/certs:rw
+      - ./acme:/etc/acme.sh:rw
     networks:
       - proxy_network
     environment:

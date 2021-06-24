@@ -8,6 +8,11 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 
 ## unreleased (Release 4.2.0)
 
+The docker-compose setup for Nginx has been updated to latest versions of the software. Users are encouraged to update their respective service instantiations.
+
+- update Nginx to 1.21.0
+- update Nginx Let's Encrypt companion to 2.1.0 for newer ACME based security standards
+
 Other changes:
 
 - improve Nginx [proxy configuration](nginx/service-template/conf.d/proxy.conf) to enable gzipped transfer of RDF files
