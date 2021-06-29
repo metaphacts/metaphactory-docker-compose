@@ -18,6 +18,7 @@ Other changes:
 - improve Nginx [proxy configuration](nginx/service-template/conf.d/proxy.conf) to enable gzipped transfer of RDF files
 - update Blazegraph image to use a newer base image (Jetty 9.4.41 + Java 8u292)
 - GraphDB version in docker-compose template updated to 9.8.0
+- improve GraphDB memory settings using container configuration
 
 
 

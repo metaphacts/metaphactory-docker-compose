@@ -4,9 +4,11 @@ services:
   container_name: "${COMPOSE_PROJECT_NAME}-graphdb"
   image: "${GRAPHDB_IMAGE}"
   restart: unless-stopped
+  mem_limit: 2g
+  mem_reservation: 1g
   environment:
     GDB_JAVA_OPTS: >-
-        -Xmx2g -Xms1g
+        -XX:+UseContainerSupport -XX:InitialRAMPercentage=30.0 -XX:MaxRAMPercentage=75.0
         -Dgraphdb.workbench.importDirectory=/opt/graphdb/home/graphdb-import
         -Dgraphdb.license.file=/etc/graphdb-license
         -Dorg.eclipse.rdf4j.rio.encode_rdf_star=false
