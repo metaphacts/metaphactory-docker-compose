@@ -4,7 +4,8 @@
 
 * docker installed (version >= 17.x , check with `docker --version`)
 * docker-compose installed (version >= 1.14, check with `docker-compose --version`)
-* outgoing HTTP/HTTPS traffic, allowing to access external docker registries (e.g. docker public or other private/corporate docker registries)
+* a Docker host system with `x86_64` / `amd64` architecture. Please note that other architectures such as `arm64` are not currently supported but might be used with some workarounds, e.q. using [qemu](https://github.com/multiarch/qemu-user-static) or native translation
+* outgoing HTTP/HTTPS traffic, allowing to access external Docker registries (e.g. Docker Hub or other private/corporate Docker registries)
 
 ## metaphactory Deployment and Maintenance
 
@@ -94,7 +95,7 @@ Please run `docker-compose down` before running `docker-compose up` after failed
 
 ## Connecting a Git Storage for Knowledge Graph Asset Management
 
-As part of Asset Management metaphactory supports maintining versions of assets (e.g. ontologies or vocabularies) in a central Git repository. To enable version control it is required to configure and connect to such a Git Storage. The detailed steps for doing so are described in https://help.metaphacts.com/resource/Help:AssetStorageConfig.
+As part of Asset Management metaphactory supports maintaining versions of assets (e.g. ontologies or vocabularies) in a central Git repository. To enable version control it is required to configure and connect to such a Git Storage. The detailed steps for doing so are described in https://help.metaphacts.com/resource/Help:AssetStorageConfig.
 
 ## Activating GraphScope
 
