@@ -13,6 +13,10 @@ The docker-compose setup for Nginx has been updated to latest versions of the so
 
 - update Nginx to 1.21.3
 
+Other changes:
+
+- GraphDB version in docker-compose template updated to 9.9.0
+
 
 
 ## 2021-07-09 (Release 4.2.0)
