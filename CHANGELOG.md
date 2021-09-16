@@ -6,6 +6,15 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## unreleased (Release 4.3.0)
+
+
+The docker-compose setup for Nginx has been updated to latest versions of the software. Users are encouraged to update their respective service instantiations.
+
+- update Nginx to 1.21.3
+
+
+
 ## 2021-07-09 (Release 4.2.0)
 
 The docker tags have been updated to the 4.2.0 release of metaphactory.
