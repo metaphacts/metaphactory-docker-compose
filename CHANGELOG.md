@@ -11,7 +11,9 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 
 Other changes:
 
+- Updated Nginx to 1.21.4
 - Refined instructions for setting up Nginx with HTTPS
+- update Blazegraph image to use a newer base image (Jetty 9.4.44 + Java 8u302)
 
 
 ## 2021-09-30 (Release 4.3.0)
