@@ -6,6 +6,14 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## unreleased (Release 4.4.0)
+
+
+Other changes:
+
+- Refined instructions for setting up Nginx with HTTPS
+
+
 ## 2021-09-30 (Release 4.3.0)
 
 The docker tags have been updated to the 4.3.0 release of metaphactory.
