@@ -13,6 +13,7 @@ Other changes:
 
 - Updated Nginx to 1.21.4
 - Refined instructions for setting up Nginx with HTTPS
+- GraphDB version in docker-compose template updated to 9.10.0
 - update Blazegraph image to use a newer base image (Jetty 9.4.44 + Java 8u302)
 
 
