@@ -6,6 +6,11 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## 2021-12-20 (Release 4.4.1)
+
+The docker tags have been updated to the security patch release 4.4.1 of metaphactory.
+
+
 ## 2021-12-16 (Release 4.4.0)
 
 The docker tags have been updated to the 4.4.0 release of metaphactory.
