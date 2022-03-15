@@ -84,6 +84,29 @@ This is the simplest deployment to choose for local development.
 6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 7. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
+##### Compatibility mode of GraphDB 10 and metaphactory <= 4.5.0
+
+When using GraphDB 10 with metaphactory <= 4.5.0, it is required to enable a compatibility mode for the data transfer. The data transfer relies on the RDF4J binary protocol, which is evolved in the RDF4J 4.0 release. Note that metaphactory &lt;= 4.5.0 is running on RDF4J 3.7.x, while GraphDB 10 is using the 4.0 major release of RDF4J. 
+
+With metaphactory >= 4.5.0 it is possible to adjust the preferred RDF transfer format as part of the repository configuration, and thus overcome the incompatibility of the binary protocol. This can be done by setting the preferred RDF format to trig using `mph:preferredRdfFormat "trig"` in the repository configuration.
+
+In order to enable the compatibility mode on the RDF4J server side, the following system property needs to be set on the Java Virtual Machine running GraphDB: `-Dorg.eclipse.rdf4j.rio.binary.format_version=1`. When using the metaphactory docker-compose for GraphDB this can be done by applying the following snippet to the `docker-compose.overwrite.yml` file:
+
+```
+services
+  metaphactory:
+    # metaphactory definitons here
+
+  graphdb:
+    environment:
+      GDB_JAVA_OPTS: >-
+          -XX:+UseContainerSupport -XX:InitialRAMPercentage=30.0 -XX:MaxRAMPercentage=75.0
+          -Dgraphdb.workbench.importDirectory=/opt/graphdb/home/graphdb-import
+          -Dgraphdb.license.file=/etc/graphdb-license
+          -Dorg.eclipse.rdf4j.rio.encode_rdf_star=false
+          -Dorg.eclipse.rdf4j.rio.binary.format_version=1
+```
+
 ## Troubleshooting
 
 Please run `docker-compose down` before running `docker-compose up` after failed attempts (for example due to missing license file), especially if you experience errors like `unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type`.

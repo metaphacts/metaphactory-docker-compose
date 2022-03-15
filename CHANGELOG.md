@@ -6,6 +6,13 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## unreleased (Release 4.5.0)
+
+Other changes
+
+- Add compatibility instructions of metaphactory <= 4.5.0 with GraphDB 10
+
+
 ## 2021-12-20 (Release 4.4.1)
 
 The docker tags have been updated to the security patch release 4.4.1 of metaphactory.
