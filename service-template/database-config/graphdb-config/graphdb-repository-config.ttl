@@ -1,5 +1,5 @@
 #
-# Configuration template for a GraphDB EE worker repository. This is used to
+# Configuration template for a GraphDB EE worker repository (GraphDB < 10). This is used to
 # initialize a default database on docker-compose up. You can change the settings 
 # in accordance with the GraphDB documentation before first starting up the docker 
 # containers.

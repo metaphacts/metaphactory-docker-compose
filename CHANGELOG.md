@@ -10,6 +10,7 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 
 Other changes
 
+- Add GraphDB 10 repository configuration examples
 - Add compatibility instructions of metaphactory <= 4.5.0 with GraphDB 10
 
 

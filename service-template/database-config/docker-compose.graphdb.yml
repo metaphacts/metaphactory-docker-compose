@@ -38,9 +38,13 @@ services:
                 sleep 1;
             done;
             echo \"GraphDB started\";
-            curl -X POST\
-              http://graphdb:7200/rest/repositories\
-              -H 'Content-Type: multipart/form-data'\
+            # adjust repository config to your needs
+            # - graphdb-repository-config.ttl
+            # - graphdb10-repository-config.ttl
+            # - graphdb-with-SHACL-config-example.ttl
+            curl -X POST\\
+              http://graphdb:7200/rest/repositories\\
+              -H 'Content-Type: multipart/form-data'\\
               -F "config=@/config/graphdb-repository-config.ttl";
             echo \"Repository configuration applied in GraphDB\";
         "
