@@ -6,13 +6,18 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
-## unreleased (Release 4.5.0)
+## 20222-04-01 (Release 4.5.0)
+
+The docker tags have been updated to the 4.5.0 release of metaphactory.
+
+As of 4.5.0 metaphactory is shipped as a multi-architecture container image.
 
 Other changes
 
 - Add GraphDB 10 repository configuration examples
 - Add compatibility instructions of metaphactory <= 4.5.0 with GraphDB 10
 - Updated Nginx to 1.21.4, Letsencrypt Companion to 2.2.0
+- Refine Nginx security header documentation (enclose with quotes)
 
 
 ## 2021-12-20 (Release 4.4.1)

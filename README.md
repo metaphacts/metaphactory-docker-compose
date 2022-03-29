@@ -4,7 +4,8 @@
 
 * docker installed (version >= 17.x , check with `docker --version`)
 * docker-compose installed (version >= 1.14, check with `docker-compose --version`)
-* a Docker host system with `x86_64` / `amd64` architecture. Please note that other architectures such as `arm64` are not currently supported but might be used with some workarounds, e.q. using [qemu](https://github.com/multiarch/qemu-user-static) or native translation
+* a Docker host system with `x86_64` / `amd64` or `aarch64` / `arm64` architecture.
+  Please note that as of 4.5.0 metaphactory is shipped as a multi-architecture container image. When pulling the image the host will automatically select the right variant for the local architecture.
 * outgoing HTTP/HTTPS traffic, allowing to access external Docker registries (e.g. Docker Hub or other private/corporate Docker registries)
 
 ## metaphactory Deployment and Maintenance
@@ -50,7 +51,6 @@ This is the simplest deployment to choose for local development.
 3. run `cp ./database-config/.env_stardog .env`.
 4. Open the file `.env` e.g. `vi .env` and perform following changes:
     1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-    2. Please note that the deployment will contain GraphScope (`https://www.metaphacts.com/graphscope`), which runs in its own container and requires additional 2GB of memory. Remove `:./docker-compose.graphscope.yml` from the `COMPOSE_FILE` parameter to deactivate GraphScope.
 5. (Only for **metaphactory with Stardog**) Please perform additional steps below to prepare the Stardog configuration:
     1. Add your Stardog license into the `/database-config/stardog-config` folder by replacing the existing file `stardog-license-key.bin`. 
     2. You may want to modify Stardog specific parameters in the `/database-config/stardog-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
@@ -64,7 +64,7 @@ This is the simplest deployment to choose for local development.
 
 8. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
-**Note:** we are running the Stardog container as `root` user to avoid restricted volume permissions in certain Stardog images (incl. 7.4.5 and 7.5.0), c.f. `database-config/docker-compose.stardog.yml`. 
+**Note:** we are running the Stardog container as `root` user to avoid restricted volume permissions in Stardog images > 7.4.0, c.f. `database-config/docker-compose.stardog.yml`. 
 
 #### metaphactory with GraphDB
 
