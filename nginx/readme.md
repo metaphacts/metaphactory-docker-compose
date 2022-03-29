@@ -19,7 +19,7 @@ The templating definition allows to define security headers through environment 
 services:
   metaphactory:
     environment:
-      - SSL_POLICY=Mozilla-Modern
+      - "SSL_POLICY=Mozilla-Modern"
 ```
 
 The following environment variables are available:

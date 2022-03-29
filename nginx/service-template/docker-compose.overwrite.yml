@@ -3,8 +3,8 @@ services:
   nginx-proxy-docker-gen:
     # uncomment to adjust nginx template configuration
     #environment:
-    #  - SSL_POLICY=Mozilla-Modern
-    #  - REFERRER_POLICY=off
+    #  - "SSL_POLICY=Mozilla-Modern"
+    #  - "REFERRER_POLICY=off"
 
 networks:
   proxy_network:

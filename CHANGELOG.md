@@ -12,6 +12,7 @@ Other changes
 
 - Add GraphDB 10 repository configuration examples
 - Add compatibility instructions of metaphactory <= 4.5.0 with GraphDB 10
+- Updated Nginx to 1.21.4, Letsencrypt Companion to 2.2.0
 
 
 ## 2021-12-20 (Release 4.4.1)
