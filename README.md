@@ -239,7 +239,7 @@ Go into folder `nginx/config`
 
 **Please Note:** 
 
-* If you do not want to use HTTPS, make sure to not have any SSL certificates in the `certs` folder. The volumes section of the `docker-compose` files is also the place to be modified, in case you want to use a different location to place your configuration files including specific vhost configs or certificates. For details, please refer to the official [jwilder/nginx-proxy documentation](https://github.com/jwilder/nginx-proxy).<br><br>
+* If you do not want to use HTTPS, make sure to not have any SSL certificates in the `certs` folder. The volumes section of the `docker-compose` files is also the place to be modified, in case you want to use a different location to place your configuration files including specific vhost configs or certificates. For details, please refer to the official [nginxproxy/nginx-proxy documentation](https://hub.docker.com/r/nginxproxy/nginx-proxy).<br><br>
 * If you do not want to or are not able to use the nginx proxy at all (for example, you do not have a DNS entry for your host), you can still use the compose scripts to maintain your deployments. However, you will need to map/expose the metaphactory docker container port `8080` to a free host port (you basically need one port / deployment). Simply uncomment and modify the ports section in the `docker-compose.overwrite.yml` file of the service template.
 
 ### Optional: Setup with Let's Encrypt

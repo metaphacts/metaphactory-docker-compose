@@ -6,7 +6,23 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
-## 20222-04-01 (Release 4.5.0)
+
+## unreleased (Release 4.6.0)
+
+The docker tags have been updated to the 4.6.0 release of metaphactory.
+
+The docker-compose setup for Nginx has been revised (particularly w.r.t new official nginx images).
+
+Users are encouraged to migrate existing environments. Note that this is a **breaking** change as the images and compose structure for Nginx has changed. It is easiest to re-setup nginx following the instructions of the [readme](README.md).
+
+- use latest official images from https://hub.docker.com/r/nginxproxy/nginx-proxy
+- revise compose structure: docker-gen is now integrated in nginx-proxy image
+- use official nginxproxy ACME companion
+
+See also [here](nginx/readme.md) for details on the Nginx security configuration.
+
+
+## 2022-04-01 (Release 4.5.0)
 
 The docker tags have been updated to the 4.5.0 release of metaphactory.
 

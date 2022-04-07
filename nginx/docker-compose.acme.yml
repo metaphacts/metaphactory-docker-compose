@@ -1,8 +1,8 @@
 version: "2.2"
 services:
-  nginx-proxy-letsencrypt:
-    container_name: nginx-proxy-letsencrypt
-    image: "${LETSENCRYPT_COMPANION_IMAGE}"
+  nginx-proxy-acme:
+    container_name: nginx-proxy-acme
+    image: "${ACME_COMPANION_IMAGE}"
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -14,7 +14,6 @@ services:
     networks:
       - proxy_network
     environment:
-      NGINX_DOCKER_GEN_CONTAINER: "nginx-proxy-gen"
       NGINX_PROXY_CONTAINER: "nginx-proxy"
 
 

@@ -13,7 +13,7 @@ docker-compose up -d
 
 ## Security hardening options
 
-The templating definition allows to define security headers through environment variables in the container definition for `nginx-proxy-gen` (see `docker-compose.overwrite.yml`). Alternatively, the environment variables can be specified on the virtual host, i.e. the metaphactory instance.
+The templating definition allows to define security headers through environment variables in the container definition for `nginx-proxy` (see `docker-compose.overwrite.yml`). Alternatively, the environment variables can be specified on the virtual host, i.e. the metaphactory instance.
 
 ```
 services:
@@ -41,5 +41,4 @@ PERMISSIONS_POLICY  | Permissions-Policy header | off
 ## Activating changed settings
 
 * if environment variables in the container (see above) have been changed run `docker-compose up -d` to re-create the respective containers
-* to re-generate the nginx configuration, run `docker restart nginx-proxy-gen`
-* to activate changed configuration, run `docker restart nginx-proxy`
+* to re-generate and activate changed configuration, run `docker restart nginx-proxy`

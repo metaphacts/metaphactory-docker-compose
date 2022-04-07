@@ -1,37 +1,23 @@
 version: "2.2"
 services:
-  # use separate container for docker-gen to not expose docker socket over the network
-  nginx-proxy-docker-gen:
-    container_name: nginx-proxy-gen
-    image: "${NGINX_PROXY_GEN_IMAGE}"
+
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: "${NGINX_IMAGE}"
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./templates/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
       - ./certs:/etc/nginx/certs:ro
       - ./vhost.d:/etc/nginx/vhost.d:ro
-      - ./html:/usr/share/nginx/html:ro
       - ./conf.d:/etc/nginx/conf.d:rw
+      - ./htpasswd:/etc/nginx/htpasswd:ro
+      - ./html:/usr/share/nginx/html:ro
+      - ./templates/nginx.tmpl:/app/nginx.tmpl:ro
     networks:
       - proxy_network
     environment:
       - DEFAULT_HOST=${DEFAULT_HOST}
       - HSTS=max-age=31536000; includeSubDomains; preload
-    command:
-      "-notify-sighup nginx-proxy -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf"
-
-  proxy:
-    container_name: nginx-proxy
-    image: "${NGINX_IMAGE}"
-    restart: unless-stopped
-    volumes:
-      - ./certs:/etc/nginx/certs:ro
-      - ./vhost.d:/etc/nginx/vhost.d:ro
-      - ./conf.d:/etc/nginx/conf.d:ro
-      - ./htpasswd:/etc/nginx/htpasswd:ro
-      - ./html:/usr/share/nginx/html:ro
-    networks:
-      - proxy_network
     ports:
       - "443:443"
       - "80:80"

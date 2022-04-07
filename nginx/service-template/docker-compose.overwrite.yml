@@ -1,6 +1,6 @@
 version: "2.2"
 services:
-  nginx-proxy-docker-gen:
+  nginx-proxy:
     # uncomment to adjust nginx template configuration
     #environment:
     #  - "SSL_POLICY=Mozilla-Modern"
