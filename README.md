@@ -53,7 +53,7 @@ This is the simplest deployment to choose for local development.
     1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
 5. (Only for **metaphactory with Stardog**) Please perform additional steps below to prepare the Stardog configuration:
     1. Add your Stardog license into the `/database-config/stardog-config` folder by replacing the existing file `stardog-license-key.bin`. 
-    2. You may want to modify Stardog specific parameters in the `/database-config/stardog-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
+    2. You may want to modify Stardog specific parameters in the `/database-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
     3. You can also modify the `/database-config/stardog-repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with Stardog. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details. Please note that changes to the database name require modification of the database configuration in `/database-config/stardog-config/database-template.properties`.
     4. Also note that GraphScope has a reference to the database as well, which would need to be updated in `graphscope-config/stardog-config.yml` with the parameter `remoteEndpoint`, in case of changes.
 
