@@ -21,6 +21,11 @@ Users are encouraged to migrate existing environments. Note that this is a **bre
 
 See also [here](nginx/readme.md) for details on the Nginx security configuration.
 
+Other changes
+
+- Add compatibility instructions of metaphactory >= 4.6.0 with GraphDB 9.x
+- Update GraphDB to 9.11.2-ee
+
 
 ## 2022-04-01 (Release 4.5.0)
 
