@@ -256,3 +256,8 @@ Go into folder `nginx/config`
 For Let's Encrypt the system should be accessible from the outside world. Otherwise the setup is exactly the same as for default nginx. In order to activate Let's Encrypt uncomment the respective line in the `nginx/config/.env` file (see file comments for details).
 
 Note that in addition to the `VIRTUAL_HOST` the nginx generator tool inspects the `LETSENCRYPT_HOST` and `LETSENCRYPT_EMAIL` (which are by default defined through the respective settings in `.env` or alternatively explicitly defined as environment variable).
+
+
+### Infrastructure model
+
+![Infrastructure model](.infragenie/infrastructure_model.png)
