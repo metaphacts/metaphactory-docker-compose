@@ -25,15 +25,6 @@ To create a new deployment, start as follows:
 
 Then, depending on which database backend you want to use, enter the newly created deployment directory, and choose an option:
 
-#### metaphactory with Blazegraph
-
-This is the simplest deployment to choose for local development.
-
-3. Run `cp ./database-config/.env_blazegraph .env`.
-4. Open the file `.env` e.g. `vi .env` and perform following changes:
-    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-5. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-6. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
 #### metaphactory only - for use with existing graph databases
 
@@ -139,15 +130,15 @@ GraphScope can be activated as additional service in the docker-compose setup by
 
 * The `GraphScope service user` can be created or updated using htpasswd (`https://httpd.apache.org/docs/2.4/programs/htpasswd.html`) and is stored in the `users.htpasswd` file in the folder `graphscope-config`. For further details see https://help.metaphacts.com/resource/Help:GraphScopeSetup.
 * Communication between metaphactory and GraphScope is authenticated using the credentials provided in the `proxy.prop` configuration of the respective GRAPHSCOPE_CONFIGURATION (see in .env file), e.g. `graphscope-apps/app-graphscope-default/config` for the default configuration. The defined credentials must match the registered `GraphScope service user` (see above). Note that the credentials can optionally be externalized using the keys `proxy.graphscope.loginName` and `proxy.graphscope.loginPassword`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
-* If authentication is required from the GraphScope backend to the remote SPARQL endpoint (e.g. for blazegraph, stardog or the ephedra endpoint in metaphactory) the credentials can be provided in `docker-compose.overwrite.yml` for the `graphscope` service using the environment parameters `REMOTE_USER` and `REMOTE_PWD`. 
+* If authentication is required from the GraphScope backend to the remote SPARQL endpoint the credentials can be provided in `docker-compose.overwrite.yml` for the `graphscope` service using the environment parameters `REMOTE_USER` and `REMOTE_PWD`. 
     * The actual reference values can also be found in the respective GraphScope configuration file (e.g. `graphscope-config/config-blazegrap.yml`) in the parameters `remoteUser: <user-name>` and `remotePassword: <password>`. 
     * (For `default` only) The metaphactory service user requires `sparql:graphscope-ephedra:query:*` and the `proxy:graphscope` permissions
 
 
 ## Update of Deployments
-The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory, GraphScope or blazegraph, but leaving the deployment specific data and configuration assets untouched. 
+The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory, but leaving the deployment specific data and configuration assets untouched. 
 
-1. Modify the .env file in the folder of the deployment you want to update and increase/change the docker version tag of the metaphactory, GraphScope or Blazegraph container i.e. `METAPHACTORY_IMAGE`, `GRAPHSCOPE_IMAGE` and/or `BLAZEGRAPH_IMAGE`.
+1. Modify the .env file in the folder of the deployment you want to update and increase/change the docker version tag of the metaphactory container i.e. `METAPHACTORY_IMAGE`.
 2. Run `docker-compose up -d` will re-create only the containers, that have been changed.
 
 ## Deletion of Deployments

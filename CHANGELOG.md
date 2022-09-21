@@ -6,6 +6,14 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+
+## unreleased (Release 4.7.0)
+
+Other changes
+
+- Deprecate and remove docker-compose integration for Blazegraph
+
+
 ## 2022-08-19 (Release 4.6.2)
 
 The docker tags have been updated to the security patch release 4.6.2 of metaphactory.
