@@ -83,7 +83,8 @@ This is the simplest deployment to choose for local development.
 
 6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 7. Open `http://localhost:10214` and login with user `admin` and password `admin`
-
+8. (Optional) For small and medium-sized databases you can create an out-of-the-box Lucene full-text search connector by running the query which is provided on the corresponding help page.
+Please refer to http://localhost:10214/resource/Help:HowToConnectToGraphDB#full-text-search for more details. 
 
 ##### Compatibility mode of GraphDB 9.x and metaphactory >= 4.6.0
 
@@ -105,7 +106,7 @@ In order to enable the compatibility mode on the RDF4J server side, the followin
 ```
 services
   metaphactory:
-    # metaphactory definitons here
+    # metaphactory definitions here
 
   graphdb:
     environment:
@@ -233,7 +234,7 @@ Go into folder `nginx/config`
 
 5. Verify with `docker ps` that a container `nginx-proxy` is running with two ports exposed: ```80, 443```
 6. From now on the `nginx-proxy` will listen to container changes on the docker daemon. As soon as a new docker container instance is started with an environment variable  `VIRTUAL_HOST={name}.mydocker.example.com`, nginx will automatically create a vhost entry to proxy incoming HTPP(S) request on `{name}.mydocker.example.com` to the respective container. The environment variable is automatically set when using the metaphactory `docker-compose.yml` as described above. It uses the `HOST_NAME` and the `COMPOSE_PROJECT_NAME` from the `.env` file and exposes it as `VIRTUAL_HOST` to be picked up by the nginx environment. Alternatively, the `VIRTUAL_HOST` variable can be explicitly defined in the `docker-compose.overwrite.yml` in the `environment` section. Note that `VIRTUAL_PORT` can be optionally used if either multiple containers are exposed through nginx or when your container exposes more than one port.
-7. The metaphactory container needs to be configured to use the `nginx_proxy_network` as default external network, e.g. by adding the following snippets to the `docker-compose.ovewrite.yml` in the active service instance:
+7. The metaphactory container needs to be configured to use the `nginx_proxy_network` as default external network, e.g. by adding the following snippets to the `docker-compose.overwrite.yml` in the active service instance:
 
 		metaphactory:
 		  networks:
