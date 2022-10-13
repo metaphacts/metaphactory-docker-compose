@@ -10,7 +10,6 @@ services:
     GDB_JAVA_OPTS: >-
         -XX:+UseContainerSupport -XX:InitialRAMPercentage=30.0 -XX:MaxRAMPercentage=75.0
         -Dgraphdb.workbench.importDirectory=/opt/graphdb/home/graphdb-import
-        -Dgraphdb.license.file=/etc/graphdb-license
         -Dorg.eclipse.rdf4j.rio.encode_rdf_star=false
   networks:
      - metaphactory_network

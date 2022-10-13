@@ -11,6 +11,8 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 
 Other changes
 
+- Update GraphDB to 10.0.2 (incl. repository configuration snippets)
+- Adjust license configuration for GraphDB (no longer use volume mounts, instead upload through the GraphDB workbench
 - Deprecate and remove docker-compose integration for Blazegraph
 
 

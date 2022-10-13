@@ -59,22 +59,20 @@ Then, depending on which database backend you want to use, enter the newly creat
 
 #### metaphactory with GraphDB
 
-**Please note:** use of GraphDB requires that you own a valid GraphDB license file.
-
 3. run `cp ./database-config/.env_graphdb .env`. 
 4. Open the file `.env` e.g. `vi .env` and perform following changes:
     1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
 
 
 5. Please perform additional steps below to prepare the GraphDB configuration:
-    1. Add your GraphDB license file into the `/database-config/graphdb-config/license` folder by replacing the existing file `graphdb.license`. 
-    2. (Optional) modify GraphDB-specific parameters in the `/database-config/docker-compose.graphdb.yml` file, for example changing the default memory settings, or modifying the location where GraphDB stores its data on the host machine (by default, in the directory `graphdb-data` in the deployment directory). 
-    3. (Optional) modify the configuration of the default GraphDB database, which is automatically created on first boot. You can do so by editing `/database-config/graphdb-config/graphdb-repository-config.ttl`. For GraphDB >= 10 please make sure to activate `/database-config/graphdb-config/graphdb10-repository-config.ttl` in `/database-config/docker-compose.graphdb.yml` (line 45f). If you wish to enable SHACL validation, a separate example configuration is provided in `/database-config/graphdb-config/graphdb-with-SHACL-config-example.ttl`.
-    4. (Optional) you can also modify the `/database-config/graphdb-config/metaphactory.ttl` file, i.e. to use a different GraphDB database name or changing the default credentials for the repository connection with GraphDB. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
+    1. (Optional) modify GraphDB-specific parameters in the `/database-config/docker-compose.graphdb.yml` file, for example changing the default memory settings, or modifying the location where GraphDB stores its data on the host machine (by default, in the directory `graphdb-data` in the deployment directory). 
+    2. (Optional) modify the configuration of the default GraphDB database, which is automatically created on first boot. You can do so by editing `/database-config/graphdb-config/graphdb-repository-config.ttl`. For GraphDB 9.x please make sure to activate `/database-config/graphdb-config/graphdb9-repository-config.ttl` in `/database-config/docker-compose.graphdb.yml` (line 45f). If you wish to enable SHACL validation, a separate example configuration is provided in `/database-config/graphdb-config/graphdb-with-SHACL-config-example.ttl`.
+    3. (Optional) you can also modify the `/database-config/graphdb-config/metaphactory.ttl` file, i.e. to use a different GraphDB database name or changing the default credentials for the repository connection with GraphDB. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
 
 6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-7. Open `http://localhost:10214` and login with user `admin` and password `admin`
-8. (Optional) For small and medium-sized databases you can create an out-of-the-box Lucene full-text search connector by running the query which is provided on the corresponding help page.
+7. GraphDB is started without a license pre-configured. As of GraphDB 10 the database will operate in _Free Mode_. To activate GraphDB SE/EE, a valid license can be set in the GraphDB workbench UI (http://localhost:7200). Note that a (trial) license can be requested through metaphacts.
+8. Open `http://localhost:10214` and login with user `admin` and password `admin`
+9. (Optional) For small and medium-sized databases you can create an out-of-the-box Lucene full-text search connector by running the query which is provided on the corresponding help page.
 Please refer to http://localhost:10214/resource/Help:HowToConnectToGraphDB#full-text-search for more details. 
 
 ##### Compatibility mode of GraphDB 9.x and metaphactory >= 4.6.0

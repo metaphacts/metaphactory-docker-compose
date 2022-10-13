@@ -2,17 +2,16 @@ version: "2.2"
 services:
   graphdb:
 
-    # Uncomment this to make direct access to the GraphDB Workbench 
+    # Make direct access to the GraphDB Workbench 
     # (at http://localhost:7200) available.
-    # ports:
-    #  - "7200:7200"
+    ports:
+      - "7200:7200"
 
     # Uncomment to limit the amount of memory available to the GraphDB container
     # mem_limit: 2g
     # mem_reservation: 1g
     
     volumes:
-       - ./database-config/graphdb-config/license/graphdb.license:/etc/graphdb-license
 
        # By default GraphDB will store all its data in the directory 'graphdb-data' 
        # in the deployment folder. Modify this mapping if you wish to change this behavior.
@@ -40,7 +39,7 @@ services:
             echo \"GraphDB started\";
             # adjust repository config to your needs
             # - graphdb-repository-config.ttl
-            # - graphdb10-repository-config.ttl
+            # - graphdb9-repository-config.ttl
             # - graphdb-with-SHACL-config-example.ttl
             curl -X POST\\
               http://graphdb:7200/rest/repositories\\

@@ -1,66 +1,62 @@
 #
-# Configuration template for a GraphDB EE worker repository with SHACL validation enabled. 
-# This can be used to initialize a default database on docker-compose up. 
-# 
-# To use this as your default repository simply copy this file over graphdb-repository-config.ttl 
-# before running docker-compose up for the fist time.
+# Configuration template for a GraphDB 10 repository with SHACL. This is used to
+# initialize a default database on docker-compose up. You can change the settings 
+# in accordance with the GraphDB documentation before first starting up the docker 
+# containers.
 #
-# You can change the settings in accordance with the GraphDB documentation
-# before first starting up the docker containers.
-# See https://graphdb.ontotext.com/documentation/enterprise/configuring-a-repository.html
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rep: <http://www.openrdf.org/config/repository#> .
-@prefix sail: <http://www.openrdf.org/config/sail#> .
-@prefix sail-shacl: <http://rdf4j.org/config/sail/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
+@prefix sail: <http://www.openrdf.org/config/sail#>.
+@prefix graphdb: <http://www.ontotext.com/config/graphdb#>.
+@prefix shacl: <http://rdf4j.org/config/sail/shacl#>.
 
-[] a rep:Repository;
-  rep:repositoryID "metaphactory";
-  rep:repositoryImpl [
-      rep:delegate [
-          rep:repositoryType "owlim:MonitorRepository";
-          <http://www.openrdf.org/config/repository/sail#sailImpl> [
-              sail-shacl:cacheSelectNodes true;
-              sail-shacl:dashDataShapes true;
-              sail-shacl:eclipseRdf4jShaclExtensions true;
-              sail-shacl:globalLogValidationExecution false;
-              sail-shacl:ignoreNoShapesLoadedException false;
-              sail-shacl:logValidationPlans false;
-              sail-shacl:logValidationViolations false;
-              sail-shacl:parallelValidation true;
-              sail-shacl:performanceLogging false;
-              sail-shacl:rdfsSubClassReasoning true;
-              sail-shacl:serializableValidation true;
-              sail-shacl:undefinedTargetValidatesAllSubjects false;
-              sail-shacl:validationEnabled true;
-              sail-shacl:validationResultsLimitPerConstraint "-1"^^xsd:long;
-              sail-shacl:validationResultsLimitTotal "-1"^^xsd:long;
-              sail:delegate [
-                  <http://www.ontotext.com/trree/owlim#base-URL> "http://example.org/owlim#";
-                  <http://www.ontotext.com/trree/owlim#check-for-inconsistencies> "false";
-                  <http://www.ontotext.com/trree/owlim#defaultNS> "";
-                  <http://www.ontotext.com/trree/owlim#disable-sameAs> "true";
-                  <http://www.ontotext.com/trree/owlim#enable-context-index> "false";
-                  <http://www.ontotext.com/trree/owlim#enable-literal-index> "true";
-                  <http://www.ontotext.com/trree/owlim#enablePredicateList> "true";
-                  <http://www.ontotext.com/trree/owlim#entity-id-size> "32";
-                  <http://www.ontotext.com/trree/owlim#entity-index-size> "10000000";
-                  <http://www.ontotext.com/trree/owlim#imports> "";
-                  <http://www.ontotext.com/trree/owlim#in-memory-literal-properties> "true";
-                  <http://www.ontotext.com/trree/owlim#nonInterpretablePredicates> "http://www.w3.org/2000/01/rdf-schema#label;http://www.w3.org/1999/02/22-rdf-syntax-ns#type;http://www.ontotext.com/owlim/ces#gazetteerConfig;http://www.ontotext.com/owlim/ces#metadataConfig";
-                  <http://www.ontotext.com/trree/owlim#owlim-license> "";
-                  <http://www.ontotext.com/trree/owlim#query-limit-results> "0";
-                  <http://www.ontotext.com/trree/owlim#query-timeout> "0";
-                  <http://www.ontotext.com/trree/owlim#read-only> "false";
-                  <http://www.ontotext.com/trree/owlim#repository-type> "file-repository";
-                  <http://www.ontotext.com/trree/owlim#ruleset> "rdfsplus-optimized";
-                  <http://www.ontotext.com/trree/owlim#storage-folder> "storage";
-                  <http://www.ontotext.com/trree/owlim#throw-QueryEvaluationException-on-timeout> "false";
-                  sail:sailType "owlimClusterWorker:Sail"
-                ];
-              sail:sailType "rdf4j:ShaclSail"
+
+[] a rep:Repository ;
+    rep:repositoryID "metaphactory" ;
+    rdfs:label "" ;
+    rep:repositoryImpl [
+        rep:repositoryType "graphdb:SailRepository" ;
+        sr:sailImpl [
+            sail:sailType "rdf4j:ShaclSail";
+            shacl:validationEnabled "true" ;
+            shacl:logValidationPlans "false" ;
+            shacl:logValidationViolations "false" ;
+            shacl:parallelValidation "true" ;
+            shacl:globalLogValidationExecution "false" ;
+            shacl:cacheSelectNodes "true" ;
+            shacl:performanceLogging "false" ;
+            shacl:rdfsSubClassReasoning "true" ;
+            shacl:eclipseRdf4jShaclExtensions "true" ;
+            shacl:dashDataShapes "true" ;
+            shacl:validationResultsLimitTotal "1000000" ;
+            shacl:validationResultsLimitPerConstraint "1000" ;
+            shacl:transactionalValidationLimit "500000" ;
+            sail:delegate [
+                sail:sailType "graphdb:Sail" ;
+
+                graphdb:base-URL "http://example.org/owlim#" ;
+                graphdb:defaultNS "" ;
+                graphdb:entity-index-size "10000000" ;
+                graphdb:entity-id-size  "32" ;
+                graphdb:imports "" ;
+                graphdb:repository-type "file-repository" ;
+                graphdb:ruleset "empty" ;
+                graphdb:storage-folder "storage" ;
+
+                graphdb:enable-context-index "true" ;
+
+                graphdb:enablePredicateList "true" ;
+
+                graphdb:in-memory-literal-properties "true" ;
+                graphdb:enable-literal-index "true" ;
+
+                graphdb:check-for-inconsistencies "false" ;
+                graphdb:disable-sameAs  "true" ;
+                graphdb:query-timeout  "0" ;
+                graphdb:query-limit-results  "0" ;
+                graphdb:throw-QueryEvaluationException-on-timeout "false" ;
+                graphdb:read-only "false" ;
             ]
-        ];
-      rep:repositoryType "owlim:ReplicationClusterWorker"
-    ];
-rdfs:label "" .
+        ]
+    ].
