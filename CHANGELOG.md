@@ -14,6 +14,7 @@ Other changes
 - Update GraphDB to 10.0.2 (incl. repository configuration snippets)
 - Adjust license configuration for GraphDB (no longer use volume mounts, instead upload through the GraphDB workbench
 - Deprecate and remove docker-compose integration for Blazegraph
+- Adjust Content Security Policy configuration in Nginx to define font-src (required for embedded fonts in diagram printing)
 
 
 ## 2022-08-19 (Release 4.6.2)
