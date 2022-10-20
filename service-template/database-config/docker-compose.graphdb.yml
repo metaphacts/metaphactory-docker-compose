@@ -12,10 +12,15 @@ services:
     # mem_reservation: 1g
     
     volumes:
-
        # By default GraphDB will store all its data in the directory 'graphdb-data' 
        # in the deployment folder. Modify this mapping if you wish to change this behavior.
        - ./graphdb-data:/opt/graphdb/home
+
+       # Mount point of the GraphDB license (replace the file with a valid license)
+       - ./database-config/graphdb-config/license/graphdb.license:/etc/graphdb-license
+    
+    # Uncomment to use mount point for GraphDB license (instead of manual upload)
+    #command: -Dgraphdb.home=/opt/graphdb/home -Dgraphdb.license.file=/etc/graphdb-license
 
   # Automated creation and configuration of a database named 'metaphactory' in GraphDB.
   # Remove or comment out if you do not want this automatic setup to happen.

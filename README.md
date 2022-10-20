@@ -35,28 +35,6 @@ Then, depending on which database backend you want to use, enter the newly creat
 6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 7. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
-#### metaphactory with Stardog
-
- **Please note:** use of Stardog requires that you own a valid Stardog license file.
-
-3. run `cp ./database-config/.env_stardog .env`.
-4. Open the file `.env` e.g. `vi .env` and perform following changes:
-    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
-5. (Only for **metaphactory with Stardog**) Please perform additional steps below to prepare the Stardog configuration:
-    1. Add your Stardog license into the `/database-config/stardog-config` folder by replacing the existing file `stardog-license-key.bin`. 
-    2. You may want to modify Stardog specific parameters in the `/database-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
-    3. You can also modify the `/database-config/stardog-repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with Stardog. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details. Please note that changes to the database name require modification of the database configuration in `/database-config/stardog-config/database-template.properties`.
-    4. Also note that GraphScope has a reference to the database as well, which would need to be updated in `graphscope-config/stardog-config.yml` with the parameter `remoteEndpoint`, in case of changes.
-
-6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-7. Run `docker-compose exec stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file). 
-
-**Please note:** For the creation of the stardog database the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
-
-8. Open `http://localhost:10214` and login with user `admin` and password `admin`
-
-**Note:** we are running the Stardog container as `root` user to avoid restricted volume permissions in Stardog images > 7.4.0, c.f. `database-config/docker-compose.stardog.yml`. 
-
 #### metaphactory with GraphDB
 
 3. run `cp ./database-config/.env_graphdb .env`. 
@@ -70,7 +48,7 @@ Then, depending on which database backend you want to use, enter the newly creat
     3. (Optional) you can also modify the `/database-config/graphdb-config/metaphactory.ttl` file, i.e. to use a different GraphDB database name or changing the default credentials for the repository connection with GraphDB. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
 
 6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-7. GraphDB is started without a license pre-configured. As of GraphDB 10 the database will operate in _Free Mode_. To activate GraphDB SE/EE, a valid license can be set in the GraphDB workbench UI (http://localhost:7200). Note that a (trial) license can be requested through metaphacts.
+7. GraphDB is started without a license pre-configured. As of GraphDB 10 the database will operate in _Free Mode_. To activate GraphDB SE/EE, a valid license can be set in the GraphDB workbench UI (http://localhost:7200). Note that a (trial) license can be requested through metaphacts. Alternatively, a license file can be mounted as volume through Docker by replacing `database-config/graphdb-config/license/graphdb.license` with a valid license and uncommenting the overriden _command_ of `database-config/docker-compose.graphdb.yml`.
 8. Open `http://localhost:10214` and login with user `admin` and password `admin`
 9. (Optional) For small and medium-sized databases you can create an out-of-the-box Lucene full-text search connector by running the query which is provided on the corresponding help page.
 Please refer to http://localhost:10214/resource/Help:HowToConnectToGraphDB#full-text-search for more details. 
@@ -106,6 +84,30 @@ services
           -Dorg.eclipse.rdf4j.rio.encode_rdf_star=false
           -Dorg.eclipse.rdf4j.rio.binary.format_version=1
 ```
+
+
+#### metaphactory with Stardog
+
+ **Please note:** use of Stardog requires that you own a valid Stardog license file.
+
+3. run `cp ./database-config/.env_stardog .env`.
+4. Open the file `.env` e.g. `vi .env` and perform following changes:
+    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+5. (Only for **metaphactory with Stardog**) Please perform additional steps below to prepare the Stardog configuration:
+    1. Add your Stardog license into the `/database-config/stardog-config` folder by replacing the existing file `stardog-license-key.bin`. 
+    2. You may want to modify Stardog specific parameters in the `/database-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
+    3. You can also modify the `/database-config/stardog-repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with Stardog. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details. Please note that changes to the database name require modification of the database configuration in `/database-config/stardog-config/database-template.properties`.
+    4. Also note that GraphScope has a reference to the database as well, which would need to be updated in `graphscope-config/stardog-config.yml` with the parameter `remoteEndpoint`, in case of changes.
+
+6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+7. Run `docker-compose exec stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file). 
+
+**Please note:** For the creation of the stardog database the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
+
+8. Open `http://localhost:10214` and login with user `admin` and password `admin`
+
+**Note:** we are running the Stardog container as `root` user to avoid restricted volume permissions in Stardog images > 7.4.0, c.f. `database-config/docker-compose.stardog.yml`. 
+
 
 ## Troubleshooting
 
