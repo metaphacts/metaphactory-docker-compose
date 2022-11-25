@@ -30,7 +30,7 @@ Name | Description | Default
 --- | --- | ---
 HSTS | Strict Transport Security | max-age=31536000; includeSubDomains; preload
 X_FRAME_OPTIONS | X-Frame-Options header | SAMEORIGIN
-CONTENT_SECURITY_POLICY | Content-Security-Policy header | default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connectors.tableau.com/; img-src 'self' https: data:; font-src 'self' data:;
+CONTENT_SECURITY_POLICY | Content-Security-Policy header | default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connectors.tableau.com/; img-src 'self' https: data: blob:; font-src 'self' data:;
 CONTENT_SECURITY_POLICY_REPORT_ONLY | Content-Security-Policy-Report-Only header | off
 X_CONTENT_TYPE_OPTIONS | X-Content-Type-Option header | nosniff
 X_XSS_Protection | X-XSS-Protection header | 1; mode=block

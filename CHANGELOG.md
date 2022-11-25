@@ -6,6 +6,14 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+
+## unreleased (Release 4.8.0)
+
+
+Other changes:
+
+- Adjust Content Security Policy configuration in Nginx to define `image-src: blob:` (required for exporting PNGs of Charts)
+
 ## 2022-11-21 (Release 4.7.2)
 
 The docker tags have been updated to the security patch release 4.7.2 of metaphactory.
