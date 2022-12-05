@@ -1,3 +1,0 @@
-config.proxy.graphscope.targetUri=http://graphscope:9090/graphscope
-config.proxy.graphscope.loginName=${proxy.graphscope.loginName:admin}
-config.proxy.graphscope.loginPassword=${proxy.graphscope.loginPassword:metaScope!}

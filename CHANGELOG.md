@@ -13,6 +13,7 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 Other changes:
 
 - Adjust Content Security Policy configuration in Nginx to define `image-src: blob:` (required for exporting PNGs of Charts)
+- Removed GraphScope container configuration
 
 ## 2022-11-21 (Release 4.7.2)
 

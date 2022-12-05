@@ -10,10 +10,4 @@ services:
     #environment:
     #extra_hosts:
     #  - "hostmachine:172.17.0.1"
-  #graphscope:
-    # graphscope overwrites here
-    #mem_limit: 2g
-    #mem_reservation: 2g
-    #environment:
-    #  REMOTE_USER: admin
-    #  REMOTE_PWD: mypasswd
+
