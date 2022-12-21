@@ -32,7 +32,7 @@
                 owlim:ruleset "rdfsplus-optimized" ;
                 owlim:storage-folder "storage" ;
 
-                owlim:enable-context-index "false" ;
+                owlim:enable-context-index "true" ;
 
                 owlim:enablePredicateList "true" ;
 

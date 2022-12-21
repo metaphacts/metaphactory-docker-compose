@@ -28,7 +28,7 @@
             graphdb:ruleset "empty" ;
             graphdb:storage-folder "storage" ;
 
-            graphdb:enable-context-index "false" ;
+            graphdb:enable-context-index "true" ;
 
             graphdb:enablePredicateList "true" ;
 
