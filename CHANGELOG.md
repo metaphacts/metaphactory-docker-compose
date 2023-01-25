@@ -7,6 +7,14 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
 
+## unreleased (Release 5.0.0)
+
+
+Other changes:
+
+- The nginx-proxy image has been updated to 1.1.0, acme-companion to 2.2.4
+
+
 ## 2022-12-21 (Release 4.8.0)
 
 The docker tags have been updated to the 4.8.0 release of metaphactory.
