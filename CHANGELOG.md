@@ -12,7 +12,7 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 
 Other changes:
 
-- The nginx-proxy image has been updated to 1.1.0, acme-companion to 2.2.4
+- The nginx-proxy image has been updated to 1.2.2, acme-companion to 2.2.6
 
 
 ## 2022-12-21 (Release 4.8.0)
