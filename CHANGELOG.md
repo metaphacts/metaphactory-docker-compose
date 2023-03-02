@@ -7,12 +7,14 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
 
-## unreleased (Release 5.0.0)
+## 2023-03-03 (Release 4.8.4)
 
+The docker tags have been updated to the security patch release 4.8.4 of metaphactory.
 
 Other changes:
 
 - The nginx-proxy image has been updated to 1.2.2, acme-companion to 2.2.6
+- Update GraphDB to 10.1.5
 
 
 ## 2022-12-21 (Release 4.8.0)
