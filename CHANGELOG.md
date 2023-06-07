@@ -14,7 +14,7 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 Other changes:
 
 - The nginx-proxy image has been updated to 1.3.1, acme-companion to 2.2.8
-
+- Update GraphDB to 10.2.1
 
 
 ## 2023-03-03 (Release 4.8.4)
