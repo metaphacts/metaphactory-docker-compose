@@ -7,6 +7,16 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
 
+## unreleased (Release 5.1.0)
+
+The docker tags have been updated to the 5.1.0 release of metaphactory.
+
+Other changes:
+
+- Update GraphDB to 10.3.2
+- Adjust GraphDB repository configuration to throw exception on query timeouts
+
+
 ## 2023-07-27 (Release 5.0.0)
 
 The docker tags have been updated to the 5.0.0 release of metaphactory.
