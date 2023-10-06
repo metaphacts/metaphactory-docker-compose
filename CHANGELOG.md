@@ -15,6 +15,7 @@ Other changes:
 
 - Update GraphDB to 10.3.2
 - Adjust GraphDB repository configuration to throw exception on query timeouts
+- Update readme instructions to use `docker compose` as command
 
 
 ## 2023-07-27 (Release 5.0.0)

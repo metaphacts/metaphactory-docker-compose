@@ -3,7 +3,8 @@
 **Prerequisites:**
 
 * docker installed (version >= 17.x , check with `docker --version`)
-* docker-compose installed (version >= 1.14, check with `docker-compose --version`)
+* (optional) docker-compose installed (version >= 1.14, check with `docker-compose --version`)
+  Please note that `docker-compose` is deprecated, and replaced by `docker compose`
 * a Docker host system with `x86_64` / `amd64` or `aarch64` / `arm64` architecture.
   Please note that as of 4.5.0 metaphactory is shipped as a multi-architecture container image. When pulling the image the host will automatically select the right variant for the local architecture.
 * outgoing HTTP/HTTPS traffic, allowing to access external Docker registries (e.g. Docker Hub or other private/corporate Docker registries)
@@ -32,7 +33,7 @@ Then, depending on which database backend you want to use, enter the newly creat
 4. Open the file `.env` e.g. `vi .env` and perform following changes:
     1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
 5. If you want to connect to a SPARQL endpoint accessible only via the docker hostmachine, please see the instructions in the section [Accessing docker hostmachine from docker container](#accessing-docker-hostmachine-from-docker-container).
-6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+6. Run `docker compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 7. Open `http://localhost:10214` and login with user `admin` and password `admin`
 
 #### metaphactory with GraphDB
@@ -47,7 +48,7 @@ Then, depending on which database backend you want to use, enter the newly creat
     2. (Optional) modify the configuration of the default GraphDB database, which is automatically created on first boot. You can do so by editing `/database-config/graphdb-config/graphdb-repository-config.ttl`. For GraphDB 9.x please make sure to activate `/database-config/graphdb-config/graphdb9-repository-config.ttl` in `/database-config/docker-compose.graphdb.yml` (line 45f). If you wish to enable SHACL validation, a separate example configuration is provided in `/database-config/graphdb-config/graphdb-with-SHACL-config-example.ttl`.
     3. (Optional) you can also modify the `/database-config/graphdb-config/metaphactory.ttl` file, i.e. to use a different GraphDB database name or changing the default credentials for the repository connection with GraphDB. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details.
 
-6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+6. Run `docker compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
 7. GraphDB is started without a license pre-configured. As of GraphDB 10 the database will operate in _Free Mode_. To activate GraphDB SE/EE, a valid license can be set in the GraphDB workbench UI (http://localhost:7200). Note that a (trial) license can be requested through metaphacts. Alternatively, a license file can be mounted as volume through Docker by replacing `database-config/graphdb-config/license/graphdb.license` with a valid license and uncommenting the overriden _command_ of `database-config/docker-compose.graphdb.yml`.
 8. Open `http://localhost:10214` and login with user `admin` and password `admin`
 9. (Optional) For small and medium-sized databases you can create an out-of-the-box Lucene full-text search connector by running the query which is provided on the corresponding help page.
@@ -98,8 +99,8 @@ services
     2. You may want to modify Stardog specific parameters in the `/database-config/docker-compose.stardog.yml` file i.e. changing the default memory settings
     3. You can also modify the `/database-config/stardog-repository-config/myDB.ttl` file, i.e. to use a different Stardog database name or changing the default credentials for the repository connection with Stardog. The credentials can optionally be externalized using the keys `repository.default.username` and `repository.default.password`, see https://help.metaphacts.com/resource/Help:ExternalizedSecrets for further details. Please note that changes to the database name require modification of the database configuration in `/database-config/stardog-config/database-template.properties`.
  
-6. Run `docker-compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-7. Run `docker-compose exec stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file). 
+6. Run `docker compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+7. Run `docker compose exec stardog /opt/stardog/bin/stardog-admin db create -c /var/opt/stardog/database-template.properties -n myDB` to create a Stardog database. Also modify the database name from `myDB` to the name you used (e.g. if you modified the `myDB.ttl` file). 
 
 **Please note:** For the creation of the stardog database the `stardog-config/database-template.properties` will be used. This is important, since this property file sets some database configurations (for example, enabling text search/indexing and querying of all named graphs) which are important to make metaphactory seamlessly work with Stardog.
 
@@ -110,7 +111,7 @@ services
 
 ## Troubleshooting
 
-Please run `docker-compose down` before running `docker-compose up` after failed attempts (for example due to missing license file), especially if you experience errors like `unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type`.
+Please run `docker compose down` before running `docker compose up` after failed attempts (for example due to missing license file), especially if you experience errors like `unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type`.
 
 ## Accessing docker hostmachine from docker container
 
@@ -126,10 +127,10 @@ As part of Asset Management metaphactory supports maintaining versions of assets
 The most frequent use-case will be updating the runtime (i.e. software) container, for example, of the metaphactory, but leaving the deployment specific data and configuration assets untouched. 
 
 1. Modify the .env file in the folder of the deployment you want to update and increase/change the docker version tag of the metaphactory container i.e. `METAPHACTORY_IMAGE`.
-2. Run `docker-compose up -d` will re-create only the containers, that have been changed.
+2. Run `docker compose up -d` will re-create only the containers, that have been changed.
 
 ## Deletion of Deployments
-Run `docker-compose down` in the folder for deployment you want to purge. Please note, that **all containers and non-external volumes and networks** for the deployment will be removed and deleted. Make sure that you are in the correct folder (where the respective `.env` file for the deployment is located), before executing the down command.
+Run `docker compose down` in the folder for deployment you want to purge. Please note, that **all containers and non-external volumes and networks** for the deployment will be removed and deleted. Make sure that you are in the correct folder (where the respective `.env` file for the deployment is located), before executing the down command.
 
 ## Optional Setup: Activate HTTPS connector in metaphactory
 
@@ -142,10 +143,10 @@ The container by default runs a https connector on port `8443` with a self-signe
 
 In case required by the environment: the container-internal ports can also be adjusted by specifying the following properties using environment variable `PLATFORM_JETTY_OPTS`: `PLATFORM_JETTY_OPTS=jetty.http.port=8081 jetty.ssl.port=8444`
 
-Jetty will use a self-signed certificate by default and the keystore is located in `/var/lib/jetty/etc/keystore`. 
+Jetty will use a self-signed certificate by default and the keystore is located in `/var/lib/jetty/etc/keystore.p12`. 
 To use a custom certificate this keystore can be replaced, e.g. using a Docker volume (just) for that file, specifying the location and keystore password by adding the following settings to the environment variable `PLATFORM_JETTY_OPTS` (e.g. in the `.env` file).
     
-The following example provides a snippet for the keystore `mykeystore.jks` with password `changeit`. This can be used in `docker-compose.overwrite.yml`.
+The following example provides a snippet for the keystore `mykeystore.p12` with password `changeit`. This can be used in `docker-compose.overwrite.yml`.
 
 
 		services:
@@ -153,17 +154,17 @@ The following example provides a snippet for the keystore `mykeystore.jks` with 
 		    # metaphactory overwrites here
 		    #...
 		    volumes:
-		      - ./mykeystore.jks:/var/lib/jetty/etc/mykeystore.jks
+		      - ./mykeystore.p12:/var/lib/jetty/etc/mykeystore.p12
 		    environment:
-		      - PLATFORM_JETTY_OPTS=jetty.sslContext.keyStorePath=etc/mykeystore.jks jetty.sslContext.keyStorePassword=changeit jetty.sslContext.keyManagerPassword=changeit
+		      - PLATFORM_JETTY_OPTS=jetty.sslContext.keyStorePath=etc/mykeystore.p12 jetty.sslContext.keyStorePassword=changeit jetty.sslContext.keyManagerPassword=changeit
 
 **Notes:**
 
 * The keystore path is **always** relative to `/var/lib/jetty/`, so any externally injected keystore file must be placed there!
-* The keystore must be in JKS format. It is recommended to place a single certificate into the keystore, and assign the alias `jetty`
+* It is recommended to place a single certificate into the keystore, and assign the alias `jetty`
 * For managing keystores the JDK provided keytool, or visual tools (such as the [Keystore Explorer](https://keystore-explorer.org/)) can be used
 * The environment setting `PLATFORM_JETTY_OPTS` must not use quotes
-* The default password for the Jetty provided `keystore` is `storepwd`
+* The default password for the Jetty provided `keystore.p12` is `changeit`
 
 
 ## Optional Setup: NGINX Proxy Container
@@ -205,7 +206,7 @@ It is recommended to use a proxy container with virtual host mappings to proxy t
 
 3. Go into the `certs` folder i.e. `cd ./nginx/config/certs` and generate [Diffie–Hellman](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) parameters using `openssl dhparam -dsaparam -out mydocker.example.com.dhparam.pem 4096`. `-dsaparam` [option instructs OpenSSL to produce "DSA-like" DH parameters ](https://wiki.openssl.org/index.php/Manual:Dhparam(1)#OPTIONS) , which is magnitude faster then computing the dhparam 4096 (see explanation [on stackexchange](https://security.stackexchange.com/a/95184))
 Go into folder `nginx/config`
-4. Now we are ready to create and start the proxy container. Running `docker-compose up -d` should result in:
+4. Now we are ready to create and start the proxy container. Running `docker compose up -d` should result in:
 		Creating network "nginx_proxy_network" with the default driver
 		Creating nginx-proxy ...
 		Creating nginx-proxy ... done
