@@ -24,18 +24,18 @@ services:
 
 The following environment variables are available:
 
-Note: the value can be set to `off` to disable (i.e. not define the header)
+Note: the value can be set to `off` to disable (i.e. not define the header). 
 
-Name | Description | Default
---- | --- | ---
-HSTS | Strict Transport Security | max-age=31536000; includeSubDomains; preload
-X_FRAME_OPTIONS | X-Frame-Options header | SAMEORIGIN
-CONTENT_SECURITY_POLICY | Content-Security-Policy header | default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connectors.tableau.com/; img-src 'self' https: data: blob:; font-src 'self' data:;
-CONTENT_SECURITY_POLICY_REPORT_ONLY | Content-Security-Policy-Report-Only header | off
-X_CONTENT_TYPE_OPTIONS | X-Content-Type-Option header | nosniff
-X_XSS_Protection | X-XSS-Protection header | 1; mode=block
-REFERRER_POLICY  | Referrer-Policy header | same-origin
-PERMISSIONS_POLICY  | Permissions-Policy header | off
+| Name                                | Description                                | Default                                                                                                                                                             |
+|-------------------------------------|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| HSTS                                | Strict Transport Security                  | max-age=31536000; includeSubDomains; preload                                                                                                                        |
+| X_FRAME_OPTIONS                     | X-Frame-Options header                     | DENY                                                                                                                                                                |
+| CONTENT_SECURITY_POLICY             | Content-Security-Policy header             | default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' https: data: blob:; font-src 'self' data:; |
+| CONTENT_SECURITY_POLICY_REPORT_ONLY | Content-Security-Policy-Report-Only header | off                                                                                                                                                                 |
+| X_CONTENT_TYPE_OPTIONS              | X-Content-Type-Option header               | nosniff                                                                                                                                                             |
+| X_XSS_Protection                    | X-XSS-Protection header                    | off                                                                                                                                                                 |
+| REFERRER_POLICY                     | Referrer-Policy header                     | same-origin                                                                                                                                                         |
+| PERMISSIONS_POLICY                  | Permissions-Policy header                  | off                                                                                                                                                                 |
 
 
 ## Activating changed settings
