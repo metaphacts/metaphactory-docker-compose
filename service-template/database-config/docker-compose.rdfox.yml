@@ -1,0 +1,25 @@
+version: "2.2"
+services:
+   rdfox:
+      volumes:
+         # by default data is stored in a volume. Modify this mapping if you wish
+         # to change this. Note: the same needs applied to the initialize-rdfox service
+         #- ./rdfox-home:/home/rdfox/.RDFox
+         
+         - ./database-config/rdfox-config/RDFox.lic:/opt/RDFox/RDFox.lic
+
+      ports:
+         - 12110:12110
+
+   initialize-rdfox:
+      volumes:
+         # by default data is stored in a volume. Modify this mapping if you wish
+         # to change this. Note: the same needs applied to the initialize-rdfox service
+         #- ./rdfox-home:/home/rdfox/.RDFox
+         
+         - ./database-config/rdfox-config/RDFox.lic:/opt/RDFox/RDFox.lic
+         - ./database-config/rdfox-config/init:/data
+
+   metaphactory:
+      volumes:
+         - ./database-config/rdfox-config/metaphactory.ttl:/runtime-data/config/repositories/default.ttl:rw

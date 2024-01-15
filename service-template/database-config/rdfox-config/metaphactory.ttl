@@ -1,0 +1,19 @@
+@prefix rep: <http://www.openrdf.org/config/repository#> .
+@prefix sail: <http://www.openrdf.org/config/sail#> .
+@prefix sr: <http://www.openrdf.org/config/repository/sail#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mph: <http://www.metaphacts.com/ontologies/platform/repository#> .
+@prefix ephedra: <http://www.metaphacts.com/ontologies/platform/ephedra#> .
+@prefix fedsail: <http://www.openrdf.org/config/sail/federation#> .
+@prefix sparqlr: <http://www.openrdf.org/config/repository/sparql#> .
+
+[] a rep:Repository;
+  rep:repositoryID "default";
+  rdfs:label "SPARQL repository with basic authentication";
+  rep:repositoryImpl [
+      rep:repositoryType "metaphactory:SPARQLBasicAuthRepository";
+      sparqlr:query-endpoint <http://rdfox:12110/datastores/metaphactory/sparql>;
+      mph:quadMode true;
+      mph:username "admin";
+      mph:password "admin"
+    ] .

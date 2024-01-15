@@ -109,6 +109,20 @@ services
 **Note:** we are running the Stardog container as `root` user to avoid restricted volume permissions in Stardog images > 7.4.0, c.f. `database-config/docker-compose.stardog.yml`. 
 
 
+#### metaphactory with RDFox
+
+3. run `cp ./database-config/.env_rdfox .env`. 
+4. Open the file `.env` e.g. `vi .env` and perform following changes:
+    1. Change the value of the `COMPOSE_PROJECT_NAME` variable to a unique name (default is `my-deployment-1`). The name will be used to prefix container names as well as `vhost` entry in the nginx proxy (if used).
+
+5. Please perform additional steps below to prepare the RDFox configuration:
+    1. Replace the content of the file at `/database-config/rdfox-config/RDFox.lic` with a valid RDFox license key.
+    2. (Optional) The initial value of the `max-memory` server parameter can be adjusted in `.env` using `RDFOX_MAX_MEMORY`. See https://docs.oxfordsemantic.tech/7.0/servers.html#server-parameters for further details
+
+6. Run `docker compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
+7. To access the Metaphactory interface, open `http://localhost:10214` and login with user `admin` and password `admin`.
+8. To access the RDFox console, open `http://localhost:12110/console/` and login with user `admin` and password `admin`
+
 ## Troubleshooting
 
 Please run `docker compose down` before running `docker compose up` after failed attempts (for example due to missing license file), especially if you experience errors like `unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host path exists and is the expected type`.

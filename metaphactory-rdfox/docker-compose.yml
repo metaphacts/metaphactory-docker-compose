@@ -1,0 +1,56 @@
+version: "2.2"
+services:
+  rdfox:
+    cap_drop:
+      - ALL
+    container_name: "${COMPOSE_PROJECT_NAME}-rdfox"
+    depends_on:
+      initialize-rdfox:
+        condition: service_completed_successfully
+    image: "${RDFOX_IMAGE}"
+    logging:
+      driver: json-file
+      options:
+        max-size: "200k"
+        max-file: "10"
+    networks:
+      - metaphactory_network
+    platform: linux/amd64
+    volumes:
+      - rdfox_server_directory:/home/rdfox/.RDFox
+    restart: unless-stopped
+
+  initialize-rdfox:
+    command:
+      [
+         "-persistence",                "file",
+         "-allowed-schemes-on-load",    "file https",
+         "-channel-timeout",            "unlimited",
+         "-connection-keep-alive-time", "1000",
+         "-elf-logger-fields",          "date time cs-method cs-uri-stem cs-uri-query sc-status sc-bytes time-taken",
+         "-query-time-limit",           "unlimited",
+         "-request-logger",             "elf",
+         "-max-memory",                 "${RDFOX_MAX_MEMORY}",
+      ]
+    container_name: "${COMPOSE_PROJECT_NAME}-initialize-rdfox"
+    environment:
+      - RDFOX_ROLE
+      - RDFOX_PASSWORD
+      - RDFOX_MAX_MEMORY
+    image: "${RDFOX_INIT_IMAGE}"
+    platform: linux/amd64
+    volumes:
+      - rdfox_server_directory:/home/rdfox/.RDFox
+      - ./init:/data
+    logging:
+      driver: json-file
+      options:
+         max-size: "200k"
+         max-file: "10"
+         
+  metaphactory:
+    depends_on:
+      - rdfox
+
+volumes:
+  rdfox_server_directory:

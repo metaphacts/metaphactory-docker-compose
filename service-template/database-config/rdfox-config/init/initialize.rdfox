@@ -1,0 +1,3 @@
+dstore create metaphactory default-graph-name <urn:rdfox:default-graph>
+active metaphactory
+dsprop set query-validation standard-compliant
