@@ -7,6 +7,15 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
 
+## 2024-02-01 (Release 5.2.1)
+
+The docker tags have been updated to the 5.2.1 release of metaphactory.
+
+Other changes:
+
+- Refine RDFox datastore settings
+
+
 ## 2024-01-15 (Release 5.2.0)
 
 The docker tags have been updated to the 5.2.0 release of metaphactory.
