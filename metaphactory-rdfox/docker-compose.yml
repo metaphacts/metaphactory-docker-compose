@@ -26,7 +26,7 @@ services:
          "-persistence",                "file",
          "-allowed-schemes-on-load",    "file https",
          "-channel-timeout",            "unlimited",
-         "-connection-keep-alive-time", "1000",
+         "-connection-keep-alive-time", "0",
          "-elf-logger-fields",          "date time cs-method cs-uri-stem cs-uri-query sc-status sc-bytes time-taken",
          "-query-time-limit",           "unlimited",
          "-request-logger",             "elf",
