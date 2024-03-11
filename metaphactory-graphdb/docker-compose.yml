@@ -6,6 +6,7 @@ services:
   restart: unless-stopped
   mem_limit: 2g
   mem_reservation: 1g
+  stop_grace_period: 1m
   environment:
     GDB_JAVA_OPTS: >-
         -XX:+UseContainerSupport -XX:InitialRAMPercentage=30.0 -XX:MaxRAMPercentage=75.0
