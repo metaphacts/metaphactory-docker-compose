@@ -9,5 +9,5 @@ services:
 networks:
   proxy_network:
 # uncomment the two lines below if you run docker-compose for nginx after other containers have already connected to the network
-#    external:
-#     name: nginx_proxy_network
+#    name: nginx_proxy_network
+#    external: true
