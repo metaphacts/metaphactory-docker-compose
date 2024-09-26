@@ -6,6 +6,15 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+## 2024-09-25 (Release 5.5.0)
+
+The docker tags have been updated to the 5.5.0 release of metaphactory.
+
+Other changes:
+
+- Update GraphDB to 10.7.3
+- Update Nginx-proxy to 1.6.1 (Nginx version: 1.27.1)
+
 
 ## 2024-07-05 (Release 5.4.0)
 
