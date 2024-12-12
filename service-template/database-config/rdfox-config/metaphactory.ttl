@@ -9,9 +9,9 @@
 
 [] a rep:Repository;
   rep:repositoryID "default";
-  rdfs:label "SPARQL repository with basic authentication";
+  rdfs:label "RDFox repository";
   rep:repositoryImpl [
-      rep:repositoryType "metaphactory:SPARQLBasicAuthRepository";
+      rep:repositoryType "metaphactory:RDFoxRepository";
       sparqlr:query-endpoint <http://rdfox:12110/datastores/metaphactory/sparql>;
       mph:quadMode true;
       mph:username "admin";
