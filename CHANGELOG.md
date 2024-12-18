@@ -13,6 +13,8 @@ The docker tags have been updated to the 5.6.0 release of metaphactory.
 Other changes:
 
 - Update Nginx-proxy to 1.6.4 (Nginx version: 1.27.2)
+- We now recommend Docker >= 20.10.0 and docker-compose >= 1.21.2
+
 
 
 ## 2024-10-11 (Release 5.5.1)

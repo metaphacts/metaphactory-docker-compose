@@ -2,8 +2,8 @@
 
 **Prerequisites:**
 
-* docker installed (version >= 17.x , check with `docker --version`)
-* (optional) docker-compose installed (version >= 1.14, check with `docker-compose --version`)
+* docker installed (version >= 20.10.0, check with `docker --version`)
+* (optional) docker-compose installed (version >= 1.21.2, check with `docker-compose --version`)
   Please note that `docker-compose` is deprecated, and replaced by `docker compose`
 * a Docker host system with `x86_64` / `amd64` or `aarch64` / `arm64` architecture.
   Please note that as of 4.5.0 metaphactory is shipped as a multi-architecture container image. When pulling the image the host will automatically select the right variant for the local architecture.
