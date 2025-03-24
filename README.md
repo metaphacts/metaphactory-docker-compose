@@ -22,9 +22,9 @@ The following instructions are tested and validated on Linux and macOS. If runni
 To create a new deployment, start as follows:
 
 1. Clone this GIT repository with `git clone https://github.com/metaphacts/metaphactory-docker-compose.git`
-2. Create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The idea is to maintain one subfolder for every deployment.
+2. Navigate to the created folder using `cd metaphactory-docker-compose`. Then create a copy of the `service-template` folder i.e. `cp -r service-template my-deployment`. The idea is to maintain one subfolder for every deployment.
 
-Then, depending on which database backend you want to use, enter the newly created deployment directory, and choose an option:
+Then, depending on which database backend you want to use, enter the newly created deployment directory using `cd my-deployment`, and choose an option:
 
 
 #### metaphactory only - for use with existing graph databases
