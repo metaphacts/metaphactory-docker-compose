@@ -12,6 +12,7 @@ The docker tags have been updated to the 5.7.0 release of metaphactory.
 
 Other changes:
 
+- Update GraphDB to 10.8.4
 - Update RDFox to 7.3c
 - Update Nginx-proxy to 1.7.0 (Nginx version: 1.27.3)
 - Update ACME Companion to 2.5.2
