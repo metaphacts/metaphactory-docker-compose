@@ -765,6 +765,27 @@ proxy_set_header Proxy "";
     {{- /* Get the HSTS defined by containers w/ the same vhost, falling back to "max-age=31536000". */}}
     {{- $hsts := groupByKeys $vhost_containers "Env.HSTS" | first | default $globals.config.hsts }}
 
+    {{- /* Get the X-Content-Type-Options defined by containers w/ the same vhost, falling back to "nosniff" */}}
+    {{- $x_content_type := or (first (groupByKeys $vhost_containers "Env.X_CONTENT_TYPE_OPTIONS")) (or $globals.Env.X_CONTENT_TYPE_OPTIONS "nosniff") }}
+
+    {{- /* Get the X-XSS-Protection defined by containers w/ the same vhost, falling back to "off" */}}
+    {{- $x_xss_protection := or (first (groupByKeys $vhost_containers "Env.X_XSS_Protection")) (or $globals.Env.X_XSS_Protection "off") }}
+
+    {{- /* Get the Referrer-Policy defined by containers w/ the same vhost, falling back to "same-origin" */}}
+    {{- $referrer_policy := or (first (groupByKeys $vhost_containers "Env.REFERRER_POLICY")) (or $globals.Env.REFERRER_POLICY "same-origin") }}
+
+    {{- /* Get the Permissions-Policy defined by containers w/ the same vhost, falling back to "off" */}}
+    {{- $permissions_policy := or (first (groupByKeys $vhost_containers "Env.PERMISSIONS_POLICY")) (or $globals.Env.PERMISSIONS_POLICY "off") }}
+
+    {{- /* Get the Content-Security-Policy defined by containers w/ the same vhost, falling back to "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' https: data: blob:; font-src 'self' data:;" */}}
+    {{- $content_security_policy := or (first (groupByKeys $vhost_containers "Env.CONTENT_SECURITY_POLICY")) (or $globals.Env.CONTENT_SECURITY_POLICY "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' https: data: blob:; font-src 'self' data:;") }}
+
+    {{- /* Get the Content-Security-Policy-Report-Only defined by containers w/ the same vhost, falling back to "off" */}}
+    {{- $content_security_policy_report_only := or (first (groupByKeys $vhost_containers "Env.CONTENT_SECURITY_POLICY_REPORT_ONLY")) (or $globals.Env.CONTENT_SECURITY_POLICY_REPORT_ONLY "off") }}
+
+    {{- /* Get the X-Frame-Options defined by containers w/ the same vhost, falling back to "DENY" */}}
+    {{- $x_frame_options := or (first (groupByKeys $vhost_containers "Env.X_FRAME_OPTIONS")) (or $globals.Env.X_FRAME_OPTIONS "DENY") }}
+
     {{- /* Get the VIRTUAL_ROOT By containers w/ use fastcgi root */}}
     {{- $vhost_root := groupByKeys $vhost_containers "Env.VIRTUAL_ROOT" | first | default "/var/www/public" }}
 
@@ -776,6 +797,13 @@ proxy_set_header Proxy "";
         "hsts" $hsts
         "https_method" $https_method
         "non_get_redirect" $non_get_redirect
+        "x_content_type" $x_content_type
+        "x_xss_protection" $x_xss_protection
+        "referrer_policy" $referrer_policy
+        "permissions_policy" $permissions_policy
+        "content_security_policy" $content_security_policy
+        "content_security_policy_report_only" $content_security_policy_report_only
+        "x_frame_options" $x_frame_options
         "http2_enabled" $http2_enabled
         "http3_enabled" $http3_enabled
         "is_regexp" $is_regexp
@@ -1063,6 +1091,34 @@ server {
 
     {{- if $vhost.enable_debug_endpoint }}
         {{ template "debug_location" (dict "GlobalConfig" $globals.config "Hostname" $hostname "VHost" $vhost) }}
+    {{- end }}
+
+    {{- if (not (eq $vhost.x_content_type "off")) }}
+    add_header X-Content-Type-Options "{{ trim $vhost.x_content_type }}" always;
+    {{- end }}
+
+    {{- if (not (eq $vhost.x_xss_protection "off")) }}
+    add_header X-XSS-Protection "{{ trim $vhost.x_xss_protection }}" always;
+    {{- end }}
+
+    {{- if (not (eq $vhost.referrer_policy "off")) }}
+    add_header Referrer-Policy "{{ trim $vhost.referrer_policy }}" always;
+    {{- end }}
+
+    {{- if (not (eq $vhost.permissions_policy "off")) }}
+    add_header Permissions-Policy "{{ trim $vhost.permissions_policy }}" always;
+    {{- end }}
+
+    {{- if (not (eq $vhost.content_security_policy "off")) }}
+    add_header Content-Security-Policy "{{ trim $vhost.content_security_policy }}" always;
+    {{- end }}
+
+    {{- if (not (eq $vhost.content_security_policy_report_only "off")) }}
+    add_header Content-Security-Policy-Report-Only "{{ trim $vhost.content_security_policy_report_only }}" always;
+    {{- end }}
+
+    {{- if (not (eq $vhost.x_frame_options "off")) }}
+    add_header X-Frame-Options "{{ trim $vhost.x_frame_options }}" always;
     {{- end }}
 
     {{- range $path, $vpath := $vhost.paths }}
