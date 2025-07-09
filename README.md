@@ -56,7 +56,7 @@ Please refer to http://localhost:10214/resource/Help:HowToConnectToGraphDB#full-
 
 ##### Compatibility with GraphDB versions
 
-metaphactory is generally compatible with GraphDB 10 and GraphDB 11. We recommend using latest patch releases of the specific major versions, i.e., `GraphDB 10.8.8` or `GraphDB 11.0.1`. Specific versions can be adjust in the `.env` file.
+metaphactory is generally compatible with GraphDB 10 and GraphDB 11. We recommend using latest patch releases of the specific major versions, i.e., `GraphDB 10.8.8` or `GraphDB 11.0.1`. Specific versions can be adjusted in the `.env` file.
 
 
 #### metaphactory with Stardog

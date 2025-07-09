@@ -13,6 +13,7 @@ The docker tags have been updated to the 5.8.0 release of metaphactory.
 Other changes:
 
 - Update GraphDB to 10.8.8 (support for GraphDB 11.x is documented)
+- Update RDFox to 7.3d
 
 
 
