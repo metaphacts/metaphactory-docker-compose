@@ -12,6 +12,9 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 
 Other changes:
 
+- Update GraphDB to 11.4.0
+- Update Stardog to 12.1.1
+- Update RDFox to 7.6
 - Update Nginx-proxy to 1.11.0 (Nginx version: 1.31.2)
 
 
