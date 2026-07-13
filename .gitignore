@@ -1,5 +1,6 @@
 *.bin
 *.env
 .project
-test-*/
 .DS_Store
+test-*/
+qa-*/

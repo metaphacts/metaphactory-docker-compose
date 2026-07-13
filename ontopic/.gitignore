@@ -1,0 +1,8 @@
+.vscode
+.idea
+.bsp
+.htpasswd
+.env
+volumes
+secrets
+mysql-connector*

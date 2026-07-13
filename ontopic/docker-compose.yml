@@ -1,0 +1,301 @@
+# Ontopic Suite module for the metaphactory docker-compose template.
+#
+# This is a self-contained, optional module. Activate it by appending
+#   :../ontopic/docker-compose.yml
+# to the COMPOSE_FILE variable in your instance .env (see ../README.md and
+# ./README.md for details).
+#
+# How this module integrates with metaphactory:
+#
+# * Images. All Ontopic-suite services are pulled from a single Docker Hub
+#   repository, with a tag of the form `<function>-<version>` (e.g.
+#   `store-server-6.0.0`). Both the repository and the version can be overridden
+#   from the instance .env:
+#     ONTOPIC_REPOSITORY  default: metaphacts/ontopic
+#     ONTOPIC_VERSION     default: 6.0.0
+#   store-server-db uses the community postgres image and is not version-pinned.
+#
+# * Port lockdown. No Ontopic service publishes a UI host port — the Studio
+#   frontend is served through metaphactory's reverse proxy (MP_APP_ONTOPIC).
+#   The only host port exposed (ontopic-server Postgres wire, 4300) is bound to
+#   127.0.0.1 so it is reachable only from the docker host itself.
+#
+# * Container naming. All Ontopic containers are named
+#   `${COMPOSE_PROJECT_NAME}-ontopic-<svc>` — matching the
+#   `${COMPOSE_PROJECT_NAME}-metaphactory` pattern — so they are unambiguous
+#   across instances and sibling services in the same compose project.
+#
+# * Networks. metaphactory is attached to Ontopic's `application` and
+#   `databases` networks for integration; `metaphactory_network` is defined by
+#   ../metaphactory/docker-compose.yml.
+#
+# Relative host paths (`./secrets`, `./jdbc`) resolve
+# against the instance folder, because docker compose uses the directory of the
+# first COMPOSE_FILE entry (`./docker-compose.base.yml`) as the project directory.
+
+services:
+
+  # metaphactory is defined in ../metaphactory/docker-compose.yml; this block
+  # only adds the Ontopic integration (bundled app + Ontopic networks).
+  metaphactory:
+    environment:
+      - MP_APP_ONTOPIC=/bundled/apps/ontopic
+    networks:
+      - metaphactory_network
+      - application
+      - databases
+
+  angular-frontend:
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:studio-${ONTOPIC_VERSION:-6.0.0}"
+    container_name: "${COMPOSE_PROJECT_NAME}-ontopic-angular-frontend"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL",  "curl --fail http://localhost:4200 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      IS_DEMO_VERSION: ${IS_DEMO_VERSION:-false}
+      HIDE_PROJECTS: ${HIDE_PROJECTS:-false}
+      WEB_API_URL: ${WEB_API_URL:-/ontopic/api-ui/}
+      IS_DESKTOP_VERSION: ${IS_DESKTOP_VERSION:-false}
+      ENDPOINT_ORIGIN: ${ENDPOINT_ORIGIN:-}
+      ONTOPIC_SERVER_DISABLE_TLS: ${ONTOPIC_SERVER_DISABLE_TLS:-false}
+      ENABLE_DATA_COLLECTION: ${ENABLE_DATA_COLLECTION:-false}
+      URL_PREFIX: ${URL_PREFIX:-/ontopic}
+      DISABLE_PROJECT_CREATION: ${DISABLE_PROJECT_CREATION:-true}
+      DISABLE_PROJECT_DELETION: ${DISABLE_PROJECT_DELETION:-false}
+      DISABLE_ONTOLOGY_EDITING: ${DISABLE_ONTOLOGY_EDITING:-true}
+      DISABLE_DATA_SOURCE_EDITING: ${DISABLE_DATA_SOURCE_EDITING:-true}
+
+    networks:
+      - application
+
+  process-server:
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:process-server-${ONTOPIC_VERSION:-6.0.0}"
+    container_name: "${COMPOSE_PROJECT_NAME}-ontopic-process-server"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL",  "curl --fail http://localhost:8666/process-api/healthcheck || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      STORE_SERVICE_HOST: store-server
+      STORE_SERVICE_PORT: 3000
+      ENABLE_PREFIX_IMPORT: ${ENABLE_PREFIX_IMPORT:-false}
+    volumes:
+      - ${JDBC_ROOT_DIR:-./jdbc}:/app/jdbc
+    networks:
+      - application
+      - databases
+
+  store-server:
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:store-server-${ONTOPIC_VERSION:-6.0.0}"
+    container_name: "${COMPOSE_PROJECT_NAME}-ontopic-store-server"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL",  "curl --fail http://localhost:3000/internal-store-api/healthcheck || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    depends_on:
+      store-server-db:
+        condition:  service_healthy
+      ontopic-server:
+        condition:  service_healthy
+      process-server:
+        condition:  service_healthy
+    environment:
+      NODE_ENV: production
+      DB_RESET: 'false'
+      DB_MIGRATE: 'true'
+      DB_SEED: 'false'
+      DATABASE_HOST: store-server-db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: internal
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD_FILE: /run/secrets/store-db-password
+      CASBIN_STORE_HOST: store-server-db
+      CASBIN_STORE_PORT: 5432
+      CASBIN_STORE_USER: postgres
+      CASBIN_STORE_PASSWORD_FILE: /run/secrets/store-db-password
+      ONTOPIC_SERVER_HOST: ontopic-server
+      ONTOPIC_RESTORE_PROJECTS_DB: ${RESTORE_SYNC_STORE_DB:-false}
+      ONTOPIC_RESTORE_PROJECTS_DB_FILE: ${RESTORE_SYNC_STORE_DB_FILE:-docs/backups/backupjson.log.gz}
+      PROCESS_SERVICE_HOST: process-server
+      PROCESS_SERVICE_PORT: 8666
+      ENABLE_SEMANTIC_SQL: ${ENABLE_SEMANTIC_SQL:-true}
+      ONTOPIC_SERVER_WEB_API_PORT: ${ONTOPIC_SERVER_WEB_API_PORT:-8080}
+      ONTOPIC_SERVER_POSTGRES_PORT: ${ONTOPIC_SERVER_POSTGRES_PORT:-4300}
+      ONTOPIC_SERVER_DOMAIN: ${VIRTUAL_HOST:-localhost}
+      ENABLE_GIT_REPO: ${ENABLE_GIT_REPO:-false}
+      ONTOPIC_SAMPLE_DB: ${ONTOPIC_SAMPLE_DB:-true}
+      ONTOPIC_SAMPLE_DB_URL: ${ONTOPIC_SAMPLE_DB_URL-}
+      ONTOPIC_SAMPLE_DB_USERNAME: ${ONTOPIC_SAMPLE_DB_USERNAME-}
+      ONTOPIC_SAMPLE_DB_PASSWORD: ${ONTOPIC_SAMPLE_DB_PASSWORD-}
+      ONTOPIC_SAMPLE_DB_DRIVER: ${ONTOPIC_SAMPLE_DB_DRIVER-}
+      ONTOPIC_ENABLE_AUTHENTICATION: ${ONTOPIC_ENABLE_AUTHENTICATION:-false}
+      ENABLE_MATERIALIZATION: ${ENABLE_MATERIALIZATION:-}
+      DB_CLIENT: ${DB_CLIENT:-pg}
+      ENABLE_TRACKING: ${ENABLE_TRACKING:-false}
+      ENABLE_REPORTING: ${ENABLE_REPORTING:-false}
+      CLEANUP_ORPHANED_PROJECTS_ON_STARTUP: ${CLEANUP_ORPHANED_PROJECTS_ON_STARTUP:-false}
+      ENABLE_SCOPES: ${ENABLE_SCOPES:-true}
+      WEB_API_EXTERNAL_DOCS_URL: ${WEB_API_EXTERNAL_DOCS_URL:-}
+      LOG_SNAPSHOT_SIZE: ${LOG_SNAPSHOT_SIZE:-false}
+    volumes:
+      - ${STORE_SERVER_DOCS_DIR:-docs}:/app/docs
+      - ${STORE_SERVER_REPOS_DIR:-repos}:/app/repos
+    secrets:
+      - store-db-password
+    networks:
+      - application
+      - store-backend
+
+
+  store-server-db:
+    image: postgres:18.4
+    container_name: "${COMPOSE_PROJECT_NAME}-ontopic-store-server-db"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_DB: internal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/store-db-password
+    volumes:
+      - ${STORE_SERVER_DB_DATA_DIR:-store-db-data}:/var/lib/postgresql
+    secrets:
+      - store-db-password
+    networks:
+      - store-backend
+
+  ontopic-server:
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:ontopic-server-${ONTOPIC_VERSION:-6.0.0}"
+    # The service name already starts with `ontopic-`, so it is not double-prefixed.
+    container_name: "${COMPOSE_PROJECT_NAME}-ontopic-server"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL",  "curl --fail http://localhost:${ONTOPIC_SERVER_WEB_API_PORT:-8080}/healthcheck || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    # Only reachable from the docker host itself (Postgres wire protocol).
+    ports:
+      - "127.0.0.1:${ONTOPIC_SERVER_POSTGRES_PORT:-4300}:${ONTOPIC_SERVER_POSTGRES_PORT:-4300}"
+    environment:
+      ONTOPIC_SERVER_CORS_ALLOWED_ORIGINS: ${ONTOPIC_SERVER_CORS_ALLOWED_ORIGINS:-}
+      ONTOPIC_SERVER_LOG_LEVEL: ${ONTOPIC_SERVER_LOG_LEVEL:-INFO}
+      ONTOPIC_SERVER_ENABLE_MATERIALIZATION:  ${ENABLE_MATERIALIZATION:-false}
+      ONTOPIC_SERVER_ENABLE_POSTGRES_WIRE_PROTOCOL: ${ONTOPIC_SERVER_ENABLE_POSTGRES_WIRE_PROTOCOL:-true}
+      ONTOPIC_SERVER_S3_ACCESS_KEY_ID_FILE: /run/secrets/s3-access-key-id
+      ONTOPIC_SERVER_S3_ACCESS_KEY_SECRET_FILE: /run/secrets/s3-access-key-secret
+      ONTOPIC_SERVER_S3_BUCKET:    ${S3_BUCKET:-}
+      ONTOPIC_SERVER_S3_REGION:  ${S3_REGION:-}
+      ONTOPIC_SERVER_AZURE_ACCOUNT_NAME: /run/secrets/azure-account-name
+      ONTOPIC_SERVER_AZURE_ACCOUNT_KEY: /run/secrets/azure-account-key
+      ONTOPIC_SERVER_AZURE_SAS_TOKEN: /run/secrets/azure-sas-token
+      ONTOPIC_SERVER_AZURE_CONTAINER_NAME: ${AZURE_CONTAINER_NAME:-}
+      ONTOPIC_SERVER_MATERIALIZATION_CONFIGURATION_DIR:  ${MATERIALIZATION_CONFIGURATION_RELATIVE_DIR:-materialization-configuration}
+      ONTOPIC_SERVER_MATERIALIZATION_RESULT_DIR: ${MATERIALIZATION_RESULT_RELATIVE_DIR:-materialization-result}
+      ONTOPIC_SERVER_JDBC_ROOT_DIR: /opt/ontopic-server/jdbc
+      ONTOPIC_SERVER_WEB_API_PORT: ${ONTOPIC_SERVER_WEB_API_PORT:-8080}
+      ONTOPIC_SERVER_POSTGRES_PORT: ${ONTOPIC_SERVER_POSTGRES_PORT:-4300}
+      ONTOPIC_SERVER_DISABLE_TLS: ${ONTOPIC_SERVER_DISABLE_TLS:-false}
+    volumes:
+      - ${JDBC_ROOT_DIR:-./jdbc}:/opt/ontopic-server/jdbc
+      - ${ENDPOINT_DIR:-materialization-endpoint}:/opt/ontopic-server/endpoint
+      - ${ENDPOINT_SECURITY_DIR:-endpoint-security}:/opt/ontopic-server/endpoint-security
+      - ${MATERIALIZATION_DB_DIR:-materialization-db}:/opt/ontopic-server/db
+      - ${MATERIALIZATION_CONFIGURATION_DIR:-materialization-configuration}:/opt/ontopic-server/materialization-configuration
+      - ${MATERIALIZATION_RESULT_DIR:-materialization-result}:/opt/ontopic-server/materialization-result
+    secrets:
+      - s3-access-key-id
+      - s3-access-key-secret
+      - azure-account-name
+      - azure-account-key
+      - azure-sas-token
+    networks:
+      - application
+      - databases
+
+  ai-server:
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:ai-server-${ONTOPIC_VERSION:-6.0.0}"
+    container_name: "${COMPOSE_PROJECT_NAME}-ontopic-ai-server"
+    environment:
+      APP_HOST: ${AI_SERVER_HOST:-0.0.0.0}
+      APP_PORT: ${AI_SERVER_PORT:-8002}
+      SERVICE_MODE: ${AI_SERVER_SERVICE_MODE:-real}
+      LLM_MODE: ${AI_SERVER_LLM_MODE:-real}
+      AI_ENGINE: ${AI_ENGINE:-langchain}
+      OPENAI_API_KEY_FILE: ${OPENAI_API_KEY_FILE:-/run/secrets/openai-api-key}
+      ANTHROPIC_API_KEY_FILE: ${ANTHROPIC_API_KEY_FILE:-/run/secrets/anthropic-api-key}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_MODELS: ${LLM_MODELS:-}
+      LLM_DISABLE_NATIVE_CACHE: ${LLM_DISABLE_NATIVE_CACHE:-false}
+      STORE_SERVICE_HOST: store-server
+      STORE_SERVICE_PORT: 3000
+      MOCK_SERVICE_HOST: ${MOCK_SERVICE_HOST:-}
+      MOCK_SERVICE_PORT: ${MOCK_SERVICE_PORT:-}
+      LOG_LEVEL: ${AI_SERVER_LOG_LEVEL:-INFO}
+      LLM_LOG_DIRECTORY: ${LLM_LOG_DIRECTORY:-/app/llm_logs}
+      RESOURCES_DIR: ${RESOURCES_DIR:-/app/resources}
+      LLM_ADDITIONAL_HEADERS_FILE: /run/secrets/llm-additional-headers
+      CLIENT_CREDENTIALS_GRANT_TOKEN_URL: ${CLIENT_CREDENTIALS_GRANT_TOKEN_URL:-}
+      CLIENT_CREDENTIALS_GRANT_CLIENT_ID_FILE: ${CLIENT_CREDENTIALS_GRANT_CLIENT_ID_FILE:-}
+      CLIENT_CREDENTIALS_GRANT_CLIENT_SECRET_FILE: ${CLIENT_CREDENTIALS_GRANT_CLIENT_SECRET_FILE:-}
+      CLIENT_CREDENTIALS_GRANT_SCOPE: ${CLIENT_CREDENTIALS_GRANT_SCOPE:-}
+      CLIENT_CREDENTIALS_GRANT_ACCESS_TOKEN_REFRESH_MAX_INTERVAL: ${CLIENT_CREDENTIALS_GRANT_ACCESS_TOKEN_REFRESH_MAX_INTERVAL:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${AI_SERVER_PORT:-8002}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    secrets:
+      - openai-api-key
+      - anthropic-api-key
+      - llm-additional-headers
+    networks:
+      - application
+
+volumes:
+  docs:
+  repos:
+  store-db-data:
+  materialization-configuration:
+  materialization-result:
+  materialization-db:
+  materialization-endpoint:
+  endpoint-security:
+
+
+secrets:
+  store-db-password:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/store/db-password
+  s3-access-key-id:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/s3/access-key-id
+  s3-access-key-secret:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/s3/access-key-secret
+  azure-account-name:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/azure-blob-storage/account-name
+  azure-account-key:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/azure-blob-storage/account-key
+  azure-sas-token:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/azure-blob-storage/sas-token
+  openai-api-key:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/ai/openai-key
+  anthropic-api-key:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/ai/anthropic-key
+  llm-additional-headers:
+    file: ${SECRETS_ROOT_DIR:-./secrets}/ai/llm-additional-headers
+
+networks:
+  application:
+  databases:
+  store-backend:

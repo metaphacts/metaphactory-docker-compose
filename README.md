@@ -118,6 +118,18 @@ The most frequent use-case will be updating the runtime (i.e. software) containe
 ## Deletion of Deployments
 Run `docker compose down` in the folder for deployment you want to purge. Please note, that **all containers and non-external volumes and networks** for the deployment will be removed and deleted. Make sure that you are in the correct folder (where the respective `.env` file for the deployment is located), before executing the down command.
 
+## Optional Setup: Activate the Ontopic Module for the Semantic Layer
+
+The mapping and virtualization capabilities of the Semantic Layer are powered by Ontopic, deployed alongside metaphactory. Ontopic provides the environment for AI-assisted creation, curation and review of the executable (R2RML) mappings, and serves these mappings as SPARQL endpoints over your relational databases—making the data queryable as a knowledge graph without physically moving it. 
+
+To activate it, add the module's compose file to the `COMPOSE_FILE` variable in your deployment's `.env` (the entries are `:`-separated). Insert it near the end, but **before the trailing `./docker-compose.overwrite.yml`**:
+
+```sh
+COMPOSE_FILE=...:../ontopic/docker-compose.yml:./docker-compose.overwrite.yml
+```
+
+See [`ontopic/README.md`](./ontopic/README.md) for the full setup and configuration instructions.
+
 ## Optional Setup: Activate HTTPS connector in metaphactory
 
 metaphactory is typically run behind a reverse proxy (e.g. nginx or AWS ALB) which takes care of TLS termination and certificate handling. This is the preferred setup as this moves certificate handling etc. to a centrally managed endpoint and avoids having to configure all aspects of HTTPS/TLS communication within the metaphactory container.
