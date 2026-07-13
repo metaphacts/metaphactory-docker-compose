@@ -7,8 +7,11 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
 
-## unreleased (Release 6.0.0)
+## 2026-07-10 (Release 6.0.0)
 
+The docker tags have been updated to the 6.0.0 release of metaphactory.
+
+Added deployment descriptors for the Semantic Layer, powered by Ontopic.
 
 Other changes:
 
