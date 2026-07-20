@@ -6,6 +6,12 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+### unreleased
+
+Other changes:
+
+- Update Nginx-proxy to 1.11.6 (Nginx version: 1.31.3)
+
 
 ## 2026-07-10 (Release 6.0.0)
 
