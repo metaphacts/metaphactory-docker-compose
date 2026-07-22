@@ -92,8 +92,12 @@ metaphactory is generally compatible with GraphDB 10 and GraphDB 11. We recommen
     2. (Optional) The initial value of the `max-memory` server parameter can be adjusted in `.env` using `RDFOX_MAX_MEMORY`. See https://docs.oxfordsemantic.tech/7.0/servers.html#server-parameters for further details
 
 6. Run `docker compose up -d`. It is **important to run the command in the 'my-deployment' folder (containing the .env file)**, since docker-compose will pick up the `.env` file for parameterization.
-7. To access the Metaphactory interface, open `http://localhost:10214` and login with user `admin` and password `admin`.
+7. To access the metaphactory interface, open `http://localhost:10214` and login with user `admin` and password `admin`.
 8. To access the RDFox console, open `http://localhost:12110/console/` and login with user `admin` and password `admin`
+
+#### Optional Setup: Activate the Deep module for document annotation
+
+Deep can be added to any of the above deployments as an additional module. See [`metaphactory-deep/README.md`](metaphactory-deep/README.md) for full setup steps.
 
 ## Troubleshooting
 

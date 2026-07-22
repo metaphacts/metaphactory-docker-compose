@@ -1,0 +1,2 @@
+ocpMgmtApiUrl=http://deep:9083/ocm/mgmt/api/
+ocpProcApiUrl=http://deep:9081/ocm/proc/api/
