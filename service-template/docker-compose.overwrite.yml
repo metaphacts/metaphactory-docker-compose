@@ -8,11 +8,8 @@ services:
     #mem_reservation: 2g
     #environment:
     # Uncomment the following line(s) to activate bundled apps
-    # - MP_APP_AI_SERVICES=/bundled/apps/ai-services
     # - MP_APP_AWS_SERVICES=/bundled/apps/aws-services
-    # - MP_APP_EIA_PHYS=/bundled/apps/eia-physical-layer
-    # - MP_APP_EIA_BUSS=/bundled/apps/eia-business-layer
-    # - MP_APP_EIA_START=/bundled/apps/enterprise-information-architecture
+    # - MP_APP_EIA=/bundled/apps/enterprise-information-architecture
     #extra_hosts:
     #  - "hostmachine:172.17.0.1"
 
