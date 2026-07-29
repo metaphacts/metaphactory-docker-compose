@@ -41,7 +41,7 @@ services:
     restart: "no"
 
   deep:
-    image: "${DEEP_IMAGE:-metaphacts/deep:2026-07-07}"
+    image: "${DEEP_IMAGE:-metaphacts/deep:2026-07-21}"
     container_name: "${COMPOSE_PROJECT_NAME}-deep"
     restart: unless-stopped
     depends_on:

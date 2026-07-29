@@ -9,10 +9,10 @@
 #
 # * Images. All Ontopic-suite services are pulled from a single Docker Hub
 #   repository, with a tag of the form `<function>-<version>` (e.g.
-#   `store-server-6.0.0`). Both the repository and the version can be overridden
+#   `store-server-6.0.1`). Both the repository and the version can be overridden
 #   from the instance .env:
 #     ONTOPIC_REPOSITORY  default: metaphacts/ontopic
-#     ONTOPIC_VERSION     default: 6.0.0
+#     ONTOPIC_VERSION     default: 6.0.1
 #   store-server-db uses the community postgres image and is not version-pinned.
 #
 # * Port lockdown. No Ontopic service publishes a UI host port — the Studio
@@ -46,7 +46,7 @@ services:
       - databases
 
   angular-frontend:
-    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:studio-${ONTOPIC_VERSION:-6.0.0}"
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:studio-${ONTOPIC_VERSION:-6.0.1}"
     container_name: "${COMPOSE_PROJECT_NAME}-ontopic-angular-frontend"
     restart: unless-stopped
     healthcheck:
@@ -72,7 +72,7 @@ services:
       - application
 
   process-server:
-    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:process-server-${ONTOPIC_VERSION:-6.0.0}"
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:process-server-${ONTOPIC_VERSION:-6.0.1}"
     container_name: "${COMPOSE_PROJECT_NAME}-ontopic-process-server"
     restart: unless-stopped
     healthcheck:
@@ -91,7 +91,7 @@ services:
       - databases
 
   store-server:
-    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:store-server-${ONTOPIC_VERSION:-6.0.0}"
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:store-server-${ONTOPIC_VERSION:-6.0.1}"
     container_name: "${COMPOSE_PROJECT_NAME}-ontopic-store-server"
     restart: unless-stopped
     healthcheck:
@@ -175,7 +175,7 @@ services:
       - store-backend
 
   ontopic-server:
-    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:ontopic-server-${ONTOPIC_VERSION:-6.0.0}"
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:ontopic-server-${ONTOPIC_VERSION:-6.0.1}"
     # The service name already starts with `ontopic-`, so it is not double-prefixed.
     container_name: "${COMPOSE_PROJECT_NAME}-ontopic-server"
     restart: unless-stopped
@@ -224,7 +224,7 @@ services:
       - databases
 
   ai-server:
-    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:ai-server-${ONTOPIC_VERSION:-6.0.0}"
+    image: "${ONTOPIC_REPOSITORY:-metaphacts/ontopic}:ai-server-${ONTOPIC_VERSION:-6.0.1}"
     container_name: "${COMPOSE_PROJECT_NAME}-ontopic-ai-server"
     environment:
       APP_HOST: ${AI_SERVER_HOST:-0.0.0.0}

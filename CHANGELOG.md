@@ -6,16 +6,22 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
-### unreleased
+### 2026-07-29 (Release 6.0.1)
+
+The Docker tags have been updated to the 6.0.1 release of metaphactory.
+
+Added deployment descriptors for the Deep module.
 
 Other changes:
 
+- Update GraphDB to 11.4.2
 - Update Nginx-proxy to 1.11.6 (Nginx version: 1.31.3)
+- Refine the prepared environment variables for bundled app activation
 
 
 ## 2026-07-10 (Release 6.0.0)
 
-The docker tags have been updated to the 6.0.0 release of metaphactory.
+The Docker tags have been updated to the 6.0.0 release of metaphactory.
 
 Added deployment descriptors for the Semantic Layer, powered by Ontopic.
 
