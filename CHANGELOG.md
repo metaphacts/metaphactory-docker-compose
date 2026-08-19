@@ -6,6 +6,21 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
+### unreleased (Release 6.1.0)
+
+
+Other changes:
+
+- Update Nginx-proxy ACME companion to 2.8.2. Note: migration required
+
+
+Required migration: 
+
+- When the Nginx setup is used together with the Let's Encrypt / ACME companion,
+  the previous environment variables `LETSENCRYPT_EMAIL` has to be migrated to
+  `ACME_EMAIL` (usually in `.env`).
+
+
 ### 2026-07-29 (Release 6.0.1)
 
 The Docker tags have been updated to the 6.0.1 release of metaphactory.

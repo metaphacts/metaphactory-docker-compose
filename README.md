@@ -237,4 +237,4 @@ Go into folder `nginx/config`
 ### Optional: Setup with Let's Encrypt
 For Let's Encrypt the system should be accessible from the outside world. Otherwise the setup is exactly the same as for default nginx. In order to activate Let's Encrypt uncomment the respective line in the `nginx/config/.env` file (see file comments for details).
 
-Note that in addition to the `VIRTUAL_HOST` the nginx generator tool inspects the `LETSENCRYPT_HOST` and `LETSENCRYPT_EMAIL` (which are by default defined through the respective settings in `.env` or alternatively explicitly defined as environment variable).
+Note that in addition to the `VIRTUAL_HOST` the nginx generator tool inspects the `ACME_HOST` and `ACME_EMAIL` (which are by default defined through the respective settings in `.env` or alternatively explicitly defined as environment variable).
