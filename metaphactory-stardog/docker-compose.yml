@@ -2,6 +2,7 @@ services:
  stardog:
   container_name: "${COMPOSE_PROJECT_NAME}-stardog"
   image: "${STARDOG_IMAGE}"
+  platform: linux/amd64
   restart: unless-stopped
   environment:
     - STARDOG_SERVER_JAVA_ARGS=-Djava.io.tmpdir=/var/opt/tmp -Xms4g -Xmx4g -XX:MaxDirectMemorySize=8g
