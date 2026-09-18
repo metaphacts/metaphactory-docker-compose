@@ -8,6 +8,9 @@ If not mentioned otherwise, the docker-compose definitions are backwards compati
 
 ### unreleased (Release 6.1.0)
 
+Refined deployment descriptors for the Semantic Layer: Ontopic is now
+integrated into metaphactory and no longer requires separate containers.
+Please make sure to update existing deployments.
 
 Other changes:
 
@@ -16,6 +19,9 @@ Other changes:
 
 Required migration: 
 
+- Migrate existing Ontopic projects (if any) into metaphactory (see migration
+  notes in the metaphactory documentation) and remove the stand-alone containers
+  that are no longer required.
 - When the Nginx setup is used together with the Let's Encrypt / ACME companion,
   the previous environment variables `LETSENCRYPT_EMAIL` has to be migrated to
   `ACME_EMAIL` (usually in `.env`).
