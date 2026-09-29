@@ -6,11 +6,15 @@ Note: when updating to a newer release of metaphactory, also regard the informat
 
 If not mentioned otherwise, the docker-compose definitions are backwards compatible to the previous released version.
 
-### unreleased (Release 6.1.0)
+### 2026-09-29 (Release 6.1.0)
+
+The Docker tags have been updated to the 6.1.0 release of metaphactory.
 
 Refined deployment descriptors for the Semantic Layer: Ontopic is now
 integrated into metaphactory and no longer requires separate containers.
 Please make sure to update existing deployments.
+
+The former document annotation module is now integrated as Knowledge Extractor.
 
 Other changes:
 
@@ -22,6 +26,8 @@ Required migration:
 - Migrate existing Ontopic projects (if any) into metaphactory (see migration
   notes in the metaphactory documentation) and remove the stand-alone containers
   that are no longer required.
+- Migrate existing deployments using the former document annotation module (Deep)
+  to the Knowledge Extractor.
 - When the Nginx setup is used together with the Let's Encrypt / ACME companion,
   the previous environment variables `LETSENCRYPT_EMAIL` has to be migrated to
   `ACME_EMAIL` (usually in `.env`).
