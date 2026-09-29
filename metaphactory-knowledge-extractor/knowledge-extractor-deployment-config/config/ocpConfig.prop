@@ -1,0 +1,2 @@
+ocpMgmtApiUrl=http://knowledge-extractor:9083/ocm/mgmt/api/
+ocpProcApiUrl=http://knowledge-extractor:9081/ocm/proc/api/

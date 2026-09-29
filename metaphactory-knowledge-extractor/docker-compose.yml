@@ -1,0 +1,128 @@
+# Knowledge Extractor module for metaphactory-docker-compose-internal.
+#
+# Wires the Knowledge Extractor document-annotation service into a
+# service-template instance. metaphactory talks to Knowledge Extractor over
+# an internal docker network only — no host ports are exposed. Documents are
+# exchanged via the shared `document_storage` named volume: Knowledge
+# Extractor mounts it at /opt/ocm/ocmsvc/data/documents, metaphactory at
+# /storage/documents. The `knowledge-extractor-init` one-shot service
+# prepares the volume layout (file/ subdirectory + assets -> file symlink,
+# chowned to the Knowledge Extractor image's runtime UID) before Knowledge
+# Extractor starts.
+
+services:
+  knowledge-extractor-init:
+    # Prepares the shared volume layout once per `up` (idempotent):
+    #   /file/               — directory the Knowledge Extractor service writes into
+    #   /assets -> file      — symlink metaphactory writes through
+    #
+    # Runs as root in its own container so it can mkdir/ln/chown the volume
+    # root. Crucially, this happens in a SEPARATE container from Knowledge
+    # Extractor, so the Knowledge Extractor container itself can start
+    # natively as UID 1000650000 (its image USER) without a runtime setuid —
+    # for why that matters (kernel PR_SET_DUMPABLE side-effect on
+    # /proc/<pid>/fd/*).
+    #
+    # Reuses ${METAPHACTORY_IMAGE} (already required by the metaphactory
+    # service) instead of pulling a separate alpine image, to keep the
+    # external-image footprint small. `user: "0:0"` is required because the
+    # metaphactory image's USER is non-root; `entrypoint` overrides the
+    # platform startup so only the volume-prep commands run.
+    image: "${METAPHACTORY_IMAGE}"
+    container_name: "${COMPOSE_PROJECT_NAME}-knowledge-extractor-init"
+    user: "0:0"
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        mkdir -p /storage/documents/file &&
+        ln -sfn /storage/documents/file /storage/documents/assets &&
+        chown -R 1000650000:0 /storage &&
+        chmod -R g+w /storage
+    volumes:
+      - document_storage:/storage/documents
+      - vocabulary_storage:/storage/vocabularies
+      - cartridge_storage:/storage/cartridges
+    restart: "no"
+
+  knowledge-extractor:
+    image: "${KNOWLEDGE_EXTRACTOR_IMAGE:-metaphacts/knowledge-extractor:6.1.0-2026-09-28}"
+    container_name: "${COMPOSE_PROJECT_NAME}-knowledge-extractor"
+    restart: unless-stopped
+    depends_on:
+      knowledge-extractor-init:
+        condition: service_completed_successfully
+    environment:
+      # Upstream env var names — the `OC` / `OCM` / `OCP` tokens are baked
+      # into the Knowledge Extractor image and stay literal at the container
+      # boundary.
+      ENV_OC_START_OCM_MGM: "true"
+      ENV_OC_START_OCP: "true"
+      # Must match the document_storage mount point below — OC|miner
+      # resolves relative document-annotation paths (the DEFAULT baseUrl
+      # sentinel) against this root. Defaults to /data/ in the image, which
+      # does not exist on the shared volume.
+      ENV_DOC_BASE_DIR: "/opt/ocm/ocmsvc/data/documents/"
+    volumes:
+      # Shared document storage. knowledge-extractor-init has pre-created
+      # file/ and the assets -> file symlink at this mount point; both show
+      # up in metaphactory's view at /storage/documents (see below).
+      - document_storage:/opt/ocm/ocmsvc/data/documents:ro
+      # Two distinct volumes for two distinct purposes:
+      # - cartridge_storage: OC|miner's own persistent store for converted
+      #   cartridges (convertWithVocabulary's output). metaphactory never
+      #   mounts or writes to this volume.
+      # - vocabulary_storage: read-only view of the SKOS vocabulary hand-off
+      #   TTL files metaphactory writes to /storage/vocabularies. OC|miner's
+      #   convertWithVocabulary must resolve the skosPath it receives
+      #   against this mount — verify against ADR-0001 / OC|miner docs
+      #   before relying on this.
+      - cartridge_storage:/opt/ocm/ocmsvc/data/cartridges
+      - vocabulary_storage:/opt/ocm/ocmsvc/data/vocabularies:ro
+      # License: place a valid file at ./knowledge-extractor.license in the
+      # instance root (the service-template copy that holds your .env).
+      # Bind-mounted into the container as
+      # /opt/ocm/ocmsvc/data/licenses/ocm.lic — the filename inside the
+      # container is dictated by the Knowledge Extractor image.
+      - ./knowledge-extractor.license:/opt/ocm/ocmsvc/data/licenses/ocm.lic:ro
+    networks:
+      - knowledge_extractor_network
+
+  # metaphactory extension: attach to knowledge_extractor_network, activate
+  # the bundled Knowledge Extractor app, and mount the two shared volumes.
+  # Wait for knowledge-extractor-init so writes through
+  # `/storage/documents/assets/...` resolve cleanly.
+  #
+  # ocpMgmtApiUrl / ocpProcApiUrl are read by the bundled Knowledge Extractor
+  # app via metaphactory's @ConfigurationParameter mechanism (literal
+  # mixed-case keys). They are supplied through the
+  # `knowledge-extractor-deployment-config` helper app mounted below
+  # (config/ocpConfig.prop), rather than via PLATFORM_OPTS — PLATFORM_OPTS is
+  # commonly customised for other purposes, so keeping this config in a
+  # dedicated app avoids clobbering it. The values resolve to the
+  # docker-internal service name `knowledge-extractor`.
+  metaphactory:
+    environment:
+      - MP_APP_KNOWLEDGE_EXTRACTOR=/bundled/apps/knowledge-extractor
+    depends_on:
+      knowledge-extractor-init:
+        condition: service_completed_successfully
+    networks:
+      - metaphactory_network
+      - knowledge_extractor_network
+    volumes:
+      - document_storage:/storage/documents
+      - vocabulary_storage:/storage/vocabularies
+      - temp_document_storage:/storage/temp-documents
+      # Knowledge Extractor API endpoints (ocpMgmtApiUrl / ocpProcApiUrl) as
+      # a config-only app. Path is relative to the instance folder, same as
+      # ./knowledge-extractor.license.
+      - ../metaphactory-knowledge-extractor/knowledge-extractor-deployment-config:/apps/knowledge-extractor-deployment-config
+
+volumes:
+  cartridge_storage:
+  document_storage:
+  vocabulary_storage:
+  temp_document_storage:
+
+networks:
+  knowledge_extractor_network:
